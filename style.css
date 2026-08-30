@@ -75,6 +75,66 @@ header::after {
     font-size: 1.1rem;
 }
 
+/* Двухпанельная система управления */
+.control-panel {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 800px;
+    margin: 30px auto 0 auto;
+    gap: 15px;
+    justify-content: center;
+}
+
+.input-box {
+    flex: 1;
+    min-width: 280px;
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: rgba(10, 15, 29, 0.8);
+    display: flex;
+    align-items: center;
+    padding: 5px 15px;
+    transition: all 0.3s ease;
+}
+
+.input-box:focus-within {
+    border-color: var(--accent-neon);
+    box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
+}
+
+/* Выделение для поля ввода цели */
+.input-box:has(#osintTarget):focus-within {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+}
+
+.search-icon {
+    color: var(--accent-neon);
+    margin-right: 12px;
+}
+
+.target-icon {
+    color: var(--accent-blue);
+    margin-right: 12px;
+}
+
+.input-box input {
+    width: 100%;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text-main);
+    font-family: 'Inter', monospace;
+    font-size: 0.95rem;
+    padding: 10px 0;
+}
+
+.input-box input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
 /* Секции категорий */
 main {
     padding: 40px 0;
@@ -82,6 +142,10 @@ main {
 
 .category-section {
     margin-bottom: 40px;
+}
+
+.category-section.hidden {
+    display: none;
 }
 
 .category-header {
