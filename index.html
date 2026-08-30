@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSINT по номеру телефона</title>
-    <!-- Подключаем современные шрифты и иконки -->
+    <title>ENIGMA OSINT PANEL</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <link rel="stylesheet" href="style.css">
@@ -14,201 +13,79 @@
     <header>
         <div class="container">
             <div class="logo">
-                <i class="fa-solid fa-shield-halved"></i>
-                <h1>OSINT Телефонный Справочник</h1>
+                <i class="fa-solid fa-user-secret"></i>
+                <h1>ENIGMA OSINT SYSTEM</h1>
             </div>
-            <p class="subtitle">Инструменты для поиска и анализа информации по номеру телефона</p>
+            <p class="subtitle">Автоматизированный поиск цифрового следа по номеру телефона</p>
             
-            <!-- Панель управления: Ввод цели + Фильтр -->
             <div class="control-panel">
                 <div class="input-box">
                     <i class="fa-solid fa-phone-flip target-icon"></i>
-                    <input type="tel" id="osintTarget" placeholder="[target_phone]: +79991234567" autocomplete="off">
+                    <input type="tel" id="osintTarget" placeholder="Введите номер: +79964193858" autocomplete="off">
                 </div>
-                
-                <div class="input-box">
-                    <i class="fa-solid fa-terminal search-icon"></i>
-                    <input type="text" id="osintSearch" placeholder="[filter]: Название сервиса..." autocomplete="off">
-                </div>
+                <button id="startScanBtn"><i class="fa-solid fa-satellite-dish"></i> Начать поиск</button>
             </div>
         </div>
     </header>
 
     <main class="container">
-        <!-- Категория 1: Определение оператора и региона -->
-        <section class="category-section">
-            <div class="category-header">
-                <i class="fa-solid fa-tower-cell"></i>
-                <h2>Определение оператора и региона</h2>
+        <!-- Экран загрузки и терминала -->
+        <div id="terminalConsole" class="terminal-box hidden">
+            <div class="terminal-header">
+                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                <span class="terminal-title">core@enigma-core:~</span>
             </div>
-            <div class="grid">
-                <a href="https://whoismyoperator.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-globe"></i></div>
-                    <div class="card-info">
-                        <h3>whoismyoperator.ru</h3>
-                        <p>Быстрая проверка текущего оператора связи.</p>
-                    </div>
-                </a>
-                <a href="https://banki.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-building-columns"></i></div>
-                    <div class="card-info">
-                        <h3>banki.ru</h3>
-                        <p>Поиск региона и привязки номера через базы данных.</p>
-                    </div>
-                </a>
-                <div class="card generic">
-                    <div class="card-icon"><i class="fa-solid fa-sim-card"></i></div>
-                    <div class="card-info">
-                        <h3>Сайты операторов</h3>
-                        <p>Официальные сервисы МТС, Билайн, МегаФон, Tele2.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+            <div id="terminalLog" class="terminal-content"></div>
+        </div>
 
-        <!-- Категория 2: Проверка номера на утечки и базы -->
-        <section class="category-section">
-            <div class="category-header">
-                <i class="fa-solid fa-database"></i>
-                <h2>Проверка номера на утечки и базы</h2>
-            </div>
-            <div class="grid">
-                <div class="card generic">
-                    <div class="card-icon"><i class="fa-solid fa-address-book"></i></div>
-                    <div class="card-info">
-                        <h3>GetContact</h3>
-                        <p>Проверка тегов и имен, под которыми номер записан у других.</p>
-                    </div>
+        <!-- КОРНЕВОЙ БЛОК ВЫВОДА РЕЗУЛЬТАТОВ (Как в Enigma Search) -->
+        <div id="osintReport" class="report-container hidden">
+            
+            <!-- Общая сводка -->
+            <div class="report-card">
+                <div class="report-card-header">
+                    <i class="fa-solid fa-address-card"></i> Общая сводка
                 </div>
-                <div class="card generic">
-                    <div class="card-icon"><i class="fa-solid fa-phone-slash"></i></div>
-                    <div class="card-info">
-                        <h3>NumBuster</h3>
-                        <p>Поиск информации о владельце, отзывы и спам-рейтинг.</p>
-                    </div>
+                <div class="report-card-body">
+                    <div class="info-row"><strong>Страна/Регион:</strong> <span id="resRegion">Россия, Республика Дагестан</span></div>
+                    <div class="info-row"><strong>Оператор:</strong> <span id="resOperator">Скартел (Yota)</span></div>
+                    <div class="info-row"><strong>Возможные Личности:</strong> <span class="badge" id="resName">Гусейн Молодой</span></div>
+                    <div class="info-row"><strong>Связанные Email:</strong> <span class="badge blue" id="resEmail">ramazanovazamat@list.ru</span></div>
                 </div>
-                <a href="https://intelx.io" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-magnifying-glass-minus"></i></div>
-                    <div class="card-info">
-                        <h3>IntelX (intelx.io)</h3>
-                        <p>Архив интернета и поиск по слитым базам данных.</p>
-                    </div>
-                </a>
-                <a href="https://leakcheck.io" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-key"></i></div>
-                    <div class="card-info">
-                        <h3>LeakCheck (leakcheck.io)</h3>
-                        <p>Проверка привязки номера телефона к утекшим паролям.</p>
-                    </div>
-                </a>
             </div>
-        </section>
 
-        <!-- Категория 3: Поиск в соцсетях и мессенджерах -->
-        <section class="category-section">
-            <div class="category-header">
-                <i class="fa-solid fa-comments"></i>
-                <h2>Поиск в соцсетях и мессенджерах</h2>
-            </div>
-            <div class="grid">
-                <div class="card generic">
-                    <div class="card-icon"><i class="fa-brands fa-telegram"></i></div>
-                    <div class="card-info">
-                        <h3>Telegram</h3>
-                        <p>Поиск аккаунта по номеру, проверка через специализированных ботов.</p>
-                    </div>
+            <!-- Профили в интернете -->
+            <div class="report-card">
+                <div class="report-card-header">
+                    <i class="fa-solid fa-network-wired"></i> Профили в интернете
                 </div>
-                <div class="card generic">
-                    <div class="card-icon"><i class="fa-brands fa-whatsapp"></i></div>
-                    <div class="card-info">
-                        <h3>WhatsApp</h3>
-                        <p>Добавление в контакты для отображения аватарки и статуса.</p>
-                    </div>
+                <div class="report-card-body profiles-grid">
+                    <div class="profile-item"><i class="fa-brands fa-vk vk-color"></i> <span>ВКонтакте (Найдена активность)</span></div>
+                    <div class="profile-item"><i class="fa-brands fa-odnoklassniki ok-color"></i> <span>Одноклассники (Профиль привязан)</span></div>
+                    <div class="profile-item"><i class="fa-brands fa-telegram tg-color"></i> <span>Telegram ID: 6789109329</span></div>
+                    <div class="profile-item"><i class="fa-brands fa-whatsapp wa-color"></i> <span>WhatsApp (Активен)</span></div>
                 </div>
-                <div class="card generic">
-                    <div class="card-icon"><i class="fa-brands fa-viber"></i></div>
-                    <div class="card-info">
-                        <h3>Viber</h3>
-                        <p>Проверка наличия профиля и получение системного имени.</p>
-                    </div>
+            </div>
+
+            <!-- Ссылки для ручной доработки -->
+            <div class="report-card">
+                <div class="report-card-header">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Внешний глубокий поиск
                 </div>
-                <a href="https://vk.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-brands fa-vk"></i></div>
-                    <div class="card-info">
-                        <h3>ВКонтакте</h3>
-                        <p>Поиск страницы через синхронизацию контактов.</p>
-                    </div>
-                </a>
-                <a href="https://ok.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-brands fa-odnoklassniki"></i></div>
-                    <div class="card-info">
-                        <h3>Одноклассники</h3>
-                        <p>Поиск профиля по номеру телефона через приложение.</p>
-                    </div>
-                </a>
+                <div class="report-card-body quick-links">
+                    <a href="https://google.com" id="lnGoogle" target="_blank" class="osint-link-btn"><i class="fa-brands fa-google"></i> Google Дорк</a>
+                    <a href="https://yandex.ru" id="lnYandex" target="_blank" class="osint-link-btn"><i class="fa-solid fa-y"></i> Яндекс Поиск</a>
+                    <a href="https://leakcheck.io" id="lnLeak" target="_blank" class="osint-link-btn"><i class="fa-solid fa-key"></i> Проверить пароли</a>
+                </div>
             </div>
-        </section>
 
-        <!-- Категория 4: Поиск объявлений -->
-        <section class="category-section">
-            <div class="category-header">
-                <i class="fa-solid fa-rectangle-ad"></i>
-                <h2>Поиск объявлений и активностей</h2>
-            </div>
-            <div class="grid">
-                <a href="https://avito.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-shop"></i></div>
-                    <div class="card-info">
-                        <h3>Avito</h3>
-                        <p>Анализ активных и завершенных объявлений по номеру.</p>
-                    </div>
-                </a>
-                <a href="https://youla.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-basket-shopping"></i></div>
-                    <div class="card-info">
-                        <h3>Юла</h3>
-                        <p>Поиск локальных объявлений и привязанных профилей.</p>
-                    </div>
-                </a>
-            </div>
-        </section>
+        </div>
+    </main>
 
-        <!-- Категория 5: Международные инструменты -->
-        <section class="category-section">
-            <div class="category-header">
-                <i class="fa-solid fa-gears"></i>
-                <h2>Дополнительные международные инструменты</h2>
-            </div>
-            <div class="grid">
-                <a href="https://truecaller.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-phone-volume"></i></div>
-                    <div class="card-info">
-                        <h3>Truecaller</h3>
-                        <p>Глобальная база телефонных номеров и имен.</p>
-                    </div>
-                </a>
-                <a href="https://numlookup.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-address-card"></i></div>
-                    <div class="card-info">
-                        <h3>NumLookup</h3>
-                        <p>Бесплатный обратный поиск по зарубежным номерам.</p>
-                    </div>
-                </a>
-            </div>
-        </section>
+    <footer>
+        <p>&copy; 2026 ENIGMA Search Engine. Элитная панель мониторинга.</p>
+    </footer>
 
-        <!-- Категория 6: Поиск в поисковых системах -->
-        <section class="category-section">
-            <div class="category-header">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <h2>Поиск в поисковых системах</h2>
-            </div>
-            <div class="grid">
-                <a href="https://google.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-brands fa-google"></i></div>
-                    <div class="card-info">
-                        <h3>Google</h3>
-                        <p>Автоматический поиск точных совпадений номера по доркам.</p>
-                    </div>
-                </a>
-                <a href="https://yandex.ru" target="_blank" class="card">
+    <script src="script.js"></script>
+</body>
+</html>
