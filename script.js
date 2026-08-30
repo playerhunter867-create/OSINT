@@ -14,21 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Очищаем номер: оставляем только цифры (например, 79641619164)
         const cleanNumber = value.replace(/\D/g, '');
 
-        // Скрываем прошлый отчет и активируем консоль
+        // Скрываем прошлые результаты и запускаем анимацию терминала
         report.classList.add('hidden');
         terminal.classList.remove('hidden');
         log.innerHTML = '';
 
-        // Набор логов симуляции ИБ-поиска
         const logs = [
             `[INFO] Инициализация ядра Enigma Core v4.1...`,
-            `[CONNECT] Соединение со шлюзом баз утечек... Успешно.`,
-            `[SEARCH] Поиск совпадений по ключу: phone_clean = ${cleanNumber}`,
-            `[PARSING] Сканирование архивов: mail_ru_2022, vk_dump, ok_users...`,
-            `[DECRYPT] Анализ метаданных и связей социальных сетей...`,
-            `[SUCCESS] Декодирование завершено. Формирование сводного отчета...`
+            `[CONNECT] Подключение к модулям внешнего поиска... Успешно.`,
+            `[GENERATE] Сборка поисковых дорков для ключа: ${cleanNumber}`,
+            `[READY] Ссылки для автоматического пробива сформированы.`
         ];
 
         let index = 0;
@@ -39,17 +37,23 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 clearInterval(interval);
                 setTimeout(() => {
-                    // Прячем консоль и выводим элитную сводку результатов
                     terminal.classList.add('hidden');
                     
-                    // Обновляем внешние ссылки дорков для ручного дочеса
-                    document.getElementById('lnGoogle').href = `https://google.com{cleanNumber}%22`;
+                    // Меняем текст в сводке, чтобы показать, какой номер сейчас в работе
+                    document.getElementById('resRegion').textContent = "Сгенерировано для номера: " + cleanNumber;
+                    document.getElementById('resOperator').textContent = "Готово к переходу в базы";
+                    document.getElementById('resName').textContent = "[Ждет ручного дочеса]";
+                    document.getElementById('resEmail').textContent = "[Проверьте ссылки ниже]";
+
+                    // НАСТОЯЩАЯ АВТОМАТИЗАЦИЯ: подставляем реальный номер в ссылки поисковиков
+                    document.getElementById('lnGoogle').href = `https://google.com{cleanNumber}%22+OR+%22%2B7+${cleanNumber.substring(1,4)}+${cleanNumber.substring(4,7)}-${cleanNumber.substring(7,9)}-${cleanNumber.substring(9,11)}%22`;
                     document.getElementById('lnYandex').href = `https://yandex.ru{cleanNumber}%22`;
                     document.getElementById('lnLeak').href = `https://leakcheck.io{cleanNumber}`;
 
+                    // Показываем блок со ссылками
                     report.classList.remove('hidden');
-                }, 800);
+                }, 500);
             }
-        }, 600);
+        }, 400);
     });
 });
