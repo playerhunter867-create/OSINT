@@ -38,7 +38,7 @@
             <div id="terminalLog" class="terminal-content"></div>
         </div>
 
-        <!-- КОРНЕВОЙ БЛОК ВЫВОДА РЕЗУЛЬТАТОВ (Как в Enigma Search) -->
+        <!-- КОРНЕВОЙ БЛОК ВЫВОДА РЕЗУЛЬТАТОВ -->
         <div id="osintReport" class="report-container hidden">
             
             <!-- Общая сводка -->
@@ -47,10 +47,10 @@
                     <i class="fa-solid fa-address-card"></i> Общая сводка
                 </div>
                 <div class="report-card-body">
-                    <div class="info-row"><strong>Страна/Регион:</strong> <span id="resRegion">Россия, Республика Дагестан</span></div>
-                    <div class="info-row"><strong>Оператор:</strong> <span id="resOperator">Скартел (Yota)</span></div>
-                    <div class="info-row"><strong>Возможные Личности:</strong> <span class="badge" id="resName">Гусейн Молодой</span></div>
-                    <div class="info-row"><strong>Связанные Email:</strong> <span class="badge blue" id="resEmail">ramazanovazamat@list.ru</span></div>
+                    <div class="info-row"><strong>Страна/Регион:</strong> <span id="resRegion">Запрос обрабатывается...</span></div>
+                    <div class="info-row"><strong>Оператор:</strong> <span id="resOperator">Проверка реестров...</span></div>
+                    <div class="info-row"><strong>Возможные Личности:</strong> <span class="badge" id="resName">Поиск совпадений...</span></div>
+                    <div class="info-row"><strong>Связанные Email:</strong> <span class="badge blue" id="resEmail">Анализ утечек...</span></div>
                 </div>
             </div>
 
@@ -67,15 +67,15 @@
                 </div>
             </div>
 
-            <!-- Ссылки для ручной доработки -->
+            <!-- Бронебойные кнопки глубокого поиска -->
             <div class="report-card">
                 <div class="report-card-header">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> Внешний глубокий поиск
                 </div>
                 <div class="report-card-body quick-links">
-                    <a href="https://google.com" id="lnGoogle" target="_blank" class="osint-link-btn"><i class="fa-brands fa-google"></i> Google Дорк</a>
-                    <a href="https://yandex.ru" id="lnYandex" target="_blank" class="osint-link-btn"><i class="fa-solid fa-y"></i> Яндекс Поиск</a>
-                    <a href="https://leakcheck.io" id="lnLeak" target="_blank" class="osint-link-btn"><i class="fa-solid fa-key"></i> Проверить пароли</a>
+                    <button onclick="window.openGoogle()" class="osint-link-btn"><i class="fa-brands fa-google"></i> Google Дорк</button>
+                    <button onclick="window.openYandex()" class="osint-link-btn"><i class="fa-solid fa-y"></i> Яндекс Поиск</button>
+                    <button onclick="window.openLeakCheck()" class="osint-link-btn"><i class="fa-solid fa-key"></i> Проверить пароли</button>
                 </div>
             </div>
 
