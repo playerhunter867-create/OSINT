@@ -1,0 +1,177 @@
+/* Базовые настройки и переменные (Палитра киберпанк/ИБ) */
+:root {
+    --bg-main: #0a0f1d;       /* Глубокий темно-синий/черный */
+    --bg-card: #131c31;       /* Цвет карточек */
+    --bg-card-hover: #1b2744; /* Цвет карточек при наведении */
+    --accent-neon: #00ff66;   /* Неоновый зеленый (матрица/безопасность) */
+    --accent-blue: #00d2ff;   /* Технологичный голубой для ссылок */
+    --text-main: #e2e8f0;     /* Светло-серый текст */
+    --text-muted: #8a99ad;    /* Приглушенный текст */
+    --border-color: #1e2d4a;  /* Границы элементов */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    padding-bottom: 60px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Шапка сайта */
+header {
+    background: linear-gradient(180deg, #0e172a 0%, var(--bg-main) 100%);
+    border-bottom: 1px solid var(--border-color);
+    padding: 40px 0;
+    text-align: center;
+    position: relative;
+}
+
+header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-neon), transparent);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.logo i {
+    font-size: 2.5rem;
+    color: var(--accent-neon);
+    text-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+}
+
+.logo h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+/* Секции категорий */
+main {
+    padding: 40px 0;
+}
+
+.category-section {
+    margin-bottom: 40px;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.category-header i {
+    color: var(--accent-blue);
+    font-size: 1.4rem;
+}
+
+.category-header h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+/* Сетка карточек */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Стили карточек */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s ease;
+}
+
+.card:hover {
+    background-color: var(--bg-card-hover);
+    border-color: var(--accent-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 210, 255, 0.15);
+}
+
+/* Особое выделение для ссылок */
+a.card:hover .card-icon i {
+    color: var(--accent-neon);
+}
+
+.card-icon {
+    background-color: rgba(30, 45, 74, 0.5);
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-icon i {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    transition: color 0.25s;
+}
+
+.card-info h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.card-info p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Карточка без ссылки (просто информационная) */
+.card.generic {
+    cursor: default;
+}
+
+/* Подвал */
+footer {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+}
