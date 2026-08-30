@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const log = document.getElementById('terminalLog');
     const report = document.getElementById('osintReport');
 
-    // !!! ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ С RENDER ВНУТРЬ КАВЫЧЕК !!!
-    const BACKEND_URL = "https://osint-r83a.onrender.com/"; 
+    // Адрес вашего реального Python-сервера на Render
+    const BACKEND_URL = "https://osint-r83a.onrender.com"; 
 
     if (!scanBtn) return;
 
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             log.innerHTML += `<div>[CONNECT] Запрос к Python-серверу баз данных...</div>`;
             
-            // Отправляем реальный запрос на наш бэкенд на Render
+            // Отправляем реальный запрос на ваш бэкенд на Render
             const response = await fetch(`${BACKEND_URL}/api/probe`, {
                 method: 'POST',
                 headers: {
