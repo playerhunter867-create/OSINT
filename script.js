@@ -4,19 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const cards = document.querySelectorAll('.card');
     const sections = document.querySelectorAll('.category-section');
 
-    // Сохраняем исходные ссылки карточек, чтобы обновлять их на лету
-    const originalHrefs = new Map();
-    cards.forEach((card, index) => {
-        if (card.tagName === 'A') {
-            originalHrefs.set(card, card.href);
-        }
-    });
-
     // 1. ЛОГИКА ЖИВОГО ПОИСКА/ФИЛЬТРАЦИИ КАРТОЧЕК
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
-
             sections.forEach(section => {
                 const sectionCards = section.querySelectorAll('.card');
                 let visibleCardsInSection = 0;
@@ -42,40 +33,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. АВТОМАТИЧЕСКАЯ МОДИФИКАЦИЯ ССЫЛОК ПОД ВВЕДЕННЫЙ НОМЕР
-    if (targetInput) {
-        targetInput.addEventListener('input', (e) => {
-            const value = e.target.value.trim();
-            const cleanNumber = value.replace(/\D/g, ''); // Только цифры для дорков
+    // 2. НАДЕЖНЫЙ ПЕРЕХОД ПО КЛИКУ НА КАРТОЧКУ С НОМЕРОМ
+    cards.forEach(card => {
+        if (card.tagName !== 'A') return;
 
-            cards.forEach(card => {
-                if (card.tagName !== 'A') return;
+        card.addEventListener('click', (e) => {
+            const value = targetInput ? targetInput.value.trim() : '';
+            if (!value) return; // Если номер не введен, карточка работает как обычная ссылка
 
-                const baseHref = originalHrefs.get(card);
+            const cleanNumber = value.replace(/\D/g, '');
+            const baseHref = card.getAttribute('href');
+            let targetUrl = baseHref;
 
-                if (!value) {
-                    // Если поле пустое — возвращаем стандартную ссылку на главную сервиса
-                    card.href = baseHref;
-                    return;
-                }
-
-                // Перестраиваем ссылки для ключевых платформ пробива
-                if (baseHref.includes('google.com')) {
-                    card.href = `https://google.com{cleanNumber}%22+OR+%22%2B7+${cleanNumber.substring(1)}%22`;
-                } else if (baseHref.includes('yandex.ru')) {
-                    card.href = `https://yandex.ru{cleanNumber}%22`;
-                } else if (baseHref.includes('duckduckgo.com')) {
-                    card.href = `https://duckduckgo.com{cleanNumber}%22`;
-                } else if (baseHref.includes('bing.com')) {
-                    card.href = `https://bing.com{cleanNumber}%22`;
-                } else if (baseHref.includes('intelx.io')) {
-                    card.href = `https://intelx.io{cleanNumber}`;
-                } else if (baseHref.includes('leakcheck.io')) {
-                    card.href = `https://leakcheck.io{cleanNumber}`;
-                } else if (baseHref.includes('numlookup.com')) {
-                    card.href = `https://numlookup.com{cleanNumber}`;
-                }
-            });
+            // Формируем точные ссылки под поисковые системы
+            if (baseHref.includes('google.com')) {
+                e.preventDefault();
+                targetUrl = `https://google.com{cleanNumber}%22+OR+%22%2B7+${cleanNumber.substring(1)}%22`;
+                window.open(targetUrl, '_blank');
+            } else if (baseHref.includes('yandex.ru')) {
+                e.preventDefault();
+                targetUrl = `https://yandex.ru{cleanNumber}%22`;
+                window.open(targetUrl, '_blank');
+            } else if (baseHref.includes('duckduckgo.com')) {
+                e.preventDefault();
+                targetUrl = `https://duckduckgo.com{cleanNumber}%22`;
+                window.open(targetUrl, '_blank');
+            } else if (baseHref.includes('intelx.io')) {
+                e.preventDefault();
+                targetUrl = `https://intelx.io{cleanNumber}`;
+                window.open(targetUrl, '_blank');
+            } else if (baseHref.includes('leakcheck.io')) {
+                e.preventDefault();
+                targetUrl = `https://leakcheck.io{cleanNumber}`;
+                window.open(targetUrl, '_blank');
+            } else if (baseHref.includes('numlookup.com')) {
+                e.preventDefault();
+                targetUrl = `https://numlookup.com{cleanNumber}`;
+                window.open(targetUrl, '_blank');
+            }
         });
-    }
+    });
 });
