@@ -1,76 +1,55 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('osintSearch');
+    const scanBtn = document.getElementById('startScanBtn');
     const targetInput = document.getElementById('osintTarget');
-    const cards = document.querySelectorAll('.card');
-    const sections = document.querySelectorAll('.category-section');
+    const terminal = document.getElementById('terminalConsole');
+    const log = document.getElementById('terminalLog');
+    const report = document.getElementById('osintReport');
 
-    // 1. ЛОГИКА ЖИВОГО ПОИСКА/ФИЛЬТРАЦИИ КАРТОЧЕК
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            sections.forEach(section => {
-                const sectionCards = section.querySelectorAll('.card');
-                let visibleCardsInSection = 0;
+    if (!scanBtn) return;
 
-                sectionCards.forEach(card => {
-                    const title = card.querySelector('h3').textContent.toLowerCase();
-                    const desc = card.querySelector('p').textContent.toLowerCase();
+    scanBtn.addEventListener('click', () => {
+        const value = targetInput.value.trim();
+        if (!value) {
+            alert('Пожалуйста, введите целевой номер телефона!');
+            return;
+        }
 
-                    if (title.includes(query) || desc.includes(query)) {
-                        card.style.display = 'flex';
-                        visibleCardsInSection++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+        const cleanNumber = value.replace(/\D/g, '');
 
-                if (visibleCardsInSection === 0 && query !== '') {
-                    section.classList.add('hidden');
-                } else {
-                    section.classList.remove('hidden');
-                }
-            });
-        });
-    }
+        // Скрываем прошлый отчет и активируем консоль
+        report.classList.add('hidden');
+        terminal.classList.remove('hidden');
+        log.innerHTML = '';
 
-    // 2. НАДЕЖНЫЙ ПЕРЕХОД ПО КЛИКУ НА КАРТОЧКУ С НОМЕРОМ
-    cards.forEach(card => {
-        if (card.tagName !== 'A') return;
+        // Набор логов симуляции ИБ-поиска
+        const logs = [
+            `[INFO] Инициализация ядра Enigma Core v4.1...`,
+            `[CONNECT] Соединение со шлюзом баз утечек... Успешно.`,
+            `[SEARCH] Поиск совпадений по ключу: phone_clean = ${cleanNumber}`,
+            `[PARSING] Сканирование архивов: mail_ru_2022, vk_dump, ok_users...`,
+            `[DECRYPT] Анализ метаданных и связей социальных сетей...`,
+            `[SUCCESS] Декодирование завершено. Формирование сводного отчета...`
+        ];
 
-        card.addEventListener('click', (e) => {
-            const value = targetInput ? targetInput.value.trim() : '';
-            if (!value) return; // Если номер не введен, карточка работает как обычная ссылка
+        let index = 0;
+        const interval = setInterval(() => {
+            if (index < logs.length) {
+                log.innerHTML += `<div>${logs[index]}</div>`;
+                index++;
+            } else {
+                clearInterval(interval);
+                setTimeout(() => {
+                    // Прячем консоль и выводим элитную сводку результатов
+                    terminal.classList.add('hidden');
+                    
+                    // Обновляем внешние ссылки дорков для ручного дочеса
+                    document.getElementById('lnGoogle').href = `https://google.com{cleanNumber}%22`;
+                    document.getElementById('lnYandex').href = `https://yandex.ru{cleanNumber}%22`;
+                    document.getElementById('lnLeak').href = `https://leakcheck.io{cleanNumber}`;
 
-            const cleanNumber = value.replace(/\D/g, '');
-            const baseHref = card.getAttribute('href');
-            let targetUrl = baseHref;
-
-            // Формируем точные ссылки под поисковые системы
-            if (baseHref.includes('google.com')) {
-                e.preventDefault();
-                targetUrl = `https://google.com{cleanNumber}%22+OR+%22%2B7+${cleanNumber.substring(1)}%22`;
-                window.open(targetUrl, '_blank');
-            } else if (baseHref.includes('yandex.ru')) {
-                e.preventDefault();
-                targetUrl = `https://yandex.ru{cleanNumber}%22`;
-                window.open(targetUrl, '_blank');
-            } else if (baseHref.includes('duckduckgo.com')) {
-                e.preventDefault();
-                targetUrl = `https://duckduckgo.com{cleanNumber}%22`;
-                window.open(targetUrl, '_blank');
-            } else if (baseHref.includes('intelx.io')) {
-                e.preventDefault();
-                targetUrl = `https://intelx.io{cleanNumber}`;
-                window.open(targetUrl, '_blank');
-            } else if (baseHref.includes('leakcheck.io')) {
-                e.preventDefault();
-                targetUrl = `https://leakcheck.io{cleanNumber}`;
-                window.open(targetUrl, '_blank');
-            } else if (baseHref.includes('numlookup.com')) {
-                e.preventDefault();
-                targetUrl = `https://numlookup.com{cleanNumber}`;
-                window.open(targetUrl, '_blank');
+                    report.classList.remove('hidden');
+                }, 800);
             }
-        });
+        }, 600);
     });
 });
