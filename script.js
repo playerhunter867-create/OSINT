@@ -10,25 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openGoogle = function() {
         const value = targetInput.value.trim();
         const cleanNumber = value.replace(/\D/g, '');
-        if (cleanNumber) {
-            window.open(`https://google.com{cleanNumber}%22`, '_blank');
-        }
+        if (cleanNumber) window.open(`https://google.com{cleanNumber}%22`, '_blank');
     };
 
     window.openYandex = function() {
         const value = targetInput.value.trim();
         const cleanNumber = value.replace(/\D/g, '');
-        if (cleanNumber) {
-            window.open(`https://yandex.ru{cleanNumber}%22`, '_blank');
-        }
+        if (cleanNumber) window.open(`https://yandex.ru{cleanNumber}%22`, '_blank');
     };
 
     window.openLeakCheck = function() {
         const value = targetInput.value.trim();
         const cleanNumber = value.replace(/\D/g, '');
-        if (cleanNumber) {
-            window.open(`https://leakcheck.io{cleanNumber}`, '_blank');
-        }
+        if (cleanNumber) window.open(`https://leakcheck.io{cleanNumber}`, '_blank');
     };
 
     if (!scanBtn) return;
@@ -44,17 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         report.classList.add('hidden');
         terminal.classList.remove('hidden');
-        log.innerHTML = `<div>[INFO] Старт проверки номера: ${cleanNumber}</div>`;
-        log.innerHTML += `<div>[CONNECT] Безопасное GET-подключение к Python Core...</div>`;
+        log.innerHTML = `<div>[INFO] Анализ цели: ${cleanNumber}</div>`;
+        log.innerHTML += `<div>[CONNECT] Подключение к центральному серверу Enigma...</div>`;
 
         try {
-            // Запрос отправляется обычным методом GET прямо в строке адреса
-            const response = await fetch(`${BACKEND_URL}/api/probe/${cleanNumber}`);
+            // Формируем чистый GET запрос с параметром ?phone=
+            const response = await fetch(`${BACKEND_URL}/api/probe?phone=${cleanNumber}`);
 
-            if (!response.ok) throw new Error(`Код сетевого ответа: ${response.status}`);
+            if (!response.ok) throw new Error(`Код ответа: ${response.status}`);
             
             const data = await response.json();
-            log.innerHTML += `<div style="color: #00ff66;">[SUCCESS] Синхронизация успешна! Данные расшифрованы.</div>`;
+            log.innerHTML += `<div style="color: #00ff66;">[SUCCESS] Базы данных синхронизированы успешно!</div>`;
 
             setTimeout(() => {
                 terminal.classList.add('hidden');
@@ -68,8 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 800);
 
         } catch (error) {
-            log.innerHTML += `<div style="color: #ff5f56; margin-top: 10px; font-weight: bold;">[ОШИБКА]: Сервер просыпается.</div>`;
-            log.innerHTML += `<div style="color: #ffbd2e; font-size: 0.9rem; margin-top: 5px;">Пожалуйста, нажмите «Начать поиск» еще раз прямо сейчас. Бэкенд уже активен.</div>`;
+            log.innerHTML += `<div style="color: #ff5f56; margin-top: 10px; font-weight: bold;">[ОШИБКА ЯДРА]: Сервер перезапускается или перегружен.</div>`;
+            log.innerHTML += `<div style="color: #00d2ff; font-size: 0.9rem; margin-top: 5px;">Пожалуйста, обновите страницу Render или повторите клик через 10 секунд.</div>`;
         }
     });
 });
