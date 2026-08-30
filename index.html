@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ENIGMA OSINT PANEL</title>
+    <title>ENIGMA OSINT SYSTEM v2.0</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <link rel="stylesheet" href="style.css">
@@ -14,68 +14,67 @@
         <div class="container">
             <div class="logo">
                 <i class="fa-solid fa-user-secret"></i>
-                <h1>ENIGMA OSINT SYSTEM</h1>
+                <h1>ENIGMA OSINT CORE</h1>
             </div>
-            <p class="subtitle">Автоматизированный поиск цифрового следа по номеру телефона</p>
+            <p class="subtitle">Локальный высокоскоростной анализатор телефонных номеров</p>
             
             <div class="control-panel">
                 <div class="input-box">
                     <i class="fa-solid fa-phone-flip target-icon"></i>
                     <input type="tel" id="osintTarget" placeholder="Введите номер: +79894620360" autocomplete="off">
                 </div>
-                <button id="startScanBtn"><i class="fa-solid fa-satellite-dish"></i> Начать поиск</button>
+                <button id="startScanBtn" type="button"><i class="fa-solid fa-satellite-dish"></i> Запустить пробив</button>
             </div>
         </div>
     </header>
 
     <main class="container">
-        <!-- Экран загрузки и терминала -->
+        <!-- Экран загрузки -->
         <div id="terminalConsole" class="terminal-box hidden">
             <div class="terminal-header">
                 <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-                <span class="terminal-title">core@enigma-core:~</span>
+                <span class="terminal-title">core@enigma-local:~</span>
             </div>
             <div id="terminalLog" class="terminal-content"></div>
         </div>
 
-        <!-- БЛОК ВЫВОДА РЕЗУЛЬТАТОВ -->
+        <!-- КОРНЕВОЙ БЛОК ВЫВОДА РЕЗУЛЬТАТОВ -->
         <div id="osintReport" class="report-container hidden">
             
-            <!-- Общая сводка -->
+            <!-- Сводка ГЕО и Оператора -->
             <div class="report-card">
                 <div class="report-card-header">
-                    <i class="fa-solid fa-address-card"></i> Общая сводка
+                    <i class="fa-solid fa-tower-cell"></i> Идентификация соты (DEF/MNP)
                 </div>
                 <div class="report-card-body">
-                    <div class="info-row"><strong>Страна/Регион:</strong> <span id="resRegion">Анализ...</span></div>
-                    <div class="info-row"><strong>Оператор:</strong> <span id="resOperator">Анализ...</span></div>
-                    <div class="info-row"><strong>Возможные Личности:</strong> <span class="badge" id="resName">Поиск...</span></div>
-                    <div class="info-row"><strong>Связанные Email:</strong> <span class="badge blue" id="resEmail">Поиск...</span></div>
+                    <div class="info-row"><strong>Регион регистрации:</strong> <span id="resRegion">Анализ...</span></div>
+                    <div class="info-row"><strong>Текущий оператор:</strong> <span id="resOperator">Анализ...</span></div>
+                    <div class="info-row"><strong>Тип сети:</strong> <span class="badge blue">GSM / LTE Active</span></div>
                 </div>
             </div>
 
-            <!-- Профили в интернете -->
+            <!-- Скрытые совпадения из баз данных -->
             <div class="report-card">
                 <div class="report-card-header">
-                    <i class="fa-solid fa-network-wired"></i> Профили в интернете
+                    <i class="fa-solid fa-database"></i> Найденные совпадения в утечках
                 </div>
-                <div class="report-card-body profiles-grid">
-                    <div class="profile-item"><i class="fa-brands fa-vk vk-color"></i> <span>ВКонтакте (Найдена активность)</span></div>
-                    <div class="profile-item"><i class="fa-brands fa-odnoklassniki ok-color"></i> <span>Одноклассники (Профиль привязан)</span></div>
-                    <div class="profile-item"><i class="fa-brands fa-telegram tg-color"></i> <span>Telegram ID: 6789109329</span></div>
-                    <div class="profile-item"><i class="fa-brands fa-whatsapp wa-color"></i> <span>WhatsApp (Активен)</span></div>
+                <div class="report-card-body">
+                    <div class="info-row"><strong>Возможные имена (Теги):</strong> <span class="badge" id="resName">Поиск...</span></div>
+                    <div class="info-row"><strong>Связанные E-mail:</strong> <span class="badge blue" id="resEmail">Поиск...</span></div>
+                    <div class="info-row"><strong>Уровень риска слива паролей:</strong> <span style="color: #ff5f56; font-weight: bold;">Высокий (Рекомендуется дочес)</span></div>
                 </div>
             </div>
 
-            <!-- Кнопки внешнего глубокого поиска (Чистые теги БЕЗ ссылок внутри HTML) -->
+            <!-- Глубокие внешние модули -->
             <div class="report-card">
                 <div class="report-card-header">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Внешний глубокий поиск
+                    <i class="fa-solid fa-magnifying-glass"></i> Модули автоматических дорков
                 </div>
                 <div class="report-card-body quick-links">
                     <button type="button" id="btnGoogle" class="osint-link-btn"><i class="fa-brands fa-google"></i> Google Дорк</button>
                     <button type="button" id="btnYandex" class="osint-link-btn"><i class="fa-solid fa-y"></i> Яндекс Поиск</button>
-                    <button type="button" id="btnLeak" class="osint-link-btn"><i class="fa-solid fa-key"></i> Проверить пароли</button>
+                    <button type="button" id="btnLeak" class="osint-link-btn"><i class="fa-solid fa-key"></i> База LeakCheck</button>
+                    <button type="button" id="btnAvito" class="osint-link-btn"><i class="fa-solid fa-shop"></i> Парсер Avito</button>
                 </div>
             </div>
 
@@ -83,10 +82,10 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 ENIGMA Search Engine. Элитная панель мониторинга.</p>
+        <p>&copy; 2026 ENIGMA OSINT Engine v2.0. Локальная сборка.</p>
     </footer>
 
-    <!-- Подключение управляющего скрипта -->
-    <script src="main.js"></script>
+    <!-- Подключаем новый скрипт с версионным маркером для обхода кэша -->
+    <script src="main.js?v=2026"></script>
 </body>
 </html>
