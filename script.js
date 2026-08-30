@@ -1,9 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. ЛОГИКА ЖИВОГО ПОИСКА/ФИЛЬТРАЦИИ КАРТОЧЕК
     const searchInput = document.getElementById('osintSearch');
+    const targetInput = document.getElementById('osintTarget');
     const cards = document.querySelectorAll('.card');
     const sections = document.querySelectorAll('.category-section');
 
+    // Сохраняем исходные ссылки карточек, чтобы обновлять их на лету
+    const originalHrefs = new Map();
+    cards.forEach((card, index) => {
+        if (card.tagName === 'A') {
+            originalHrefs.set(card, card.href);
+        }
+    });
+
+    // 1. ЛОГИКА ЖИВОГО ПОИСКА/ФИЛЬТРАЦИИ КАРТОЧЕК
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
@@ -24,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // Скрываем всю секцию целиком, если в ней ничего не нашлось
                 if (visibleCardsInSection === 0 && query !== '') {
                     section.classList.add('hidden');
                 } else {
@@ -34,23 +42,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. ДИНАМИЧЕСКИЙ ПОДСТАВНОЙ НОМЕР ДЛЯ ССЫЛОК (ОПЦИОНАЛЬНО)
-    // Эта часть подготавливает сайт к будущему добавлению поля ввода номера
-    window.generateOsintLinks = function(phoneNumber) {
-        if (!phoneNumber) return;
-        
-        // Очищаем номер от лишних символов (оставляем только цифры)
-        const cleanNumber = phoneNumber.replace(/\D/g, '');
-        
-        // Находим все ссылки на внешние поисковики и адаптируем их под дорки
-        const googleCard = document.querySelector('a[href*="google.com"]');
-        if (googleCard) {
-            googleCard.href = `https://google.com{cleanNumber}%22+OR+%22%2B7+${cleanNumber.substring(1)}%22`;
-        }
+    // 2. АВТОМАТИЧЕСКАЯ МОДИФИКАЦИЯ ССЫЛОК ПОД ВВЕДЕННЫЙ НОМЕР
+    if (targetInput) {
+        targetInput.addEventListener('input', (e) => {
+            const value = e.target.value.trim();
+            const cleanNumber = value.replace(/\D/g, ''); // Только цифры для дорков
 
-        const yandexCard = document.querySelector('a[href*="yandex.ru"]');
-        if (yandexCard) {
-            yandexCard.href = `https://yandex.ru{cleanNumber}%22`;
-        }
-    };
+            cards.forEach(card => {
+                if (card.tagName !== 'A') return;
+
+                const baseHref = originalHrefs.get(card);
+
+                if (!value) {
+                    // Если поле пустое — возвращаем стандартную ссылку на главную сервиса
+                    card.href = baseHref;
+                    return;
+                }
+
+                // Перестраиваем ссылки для ключевых платформ пробива
+                if (baseHref.includes('google.com')) {
+                    card.href = `https://google.com{cleanNumber}%22+OR+%22%2B7+${cleanNumber.substring(1)}%22`;
+                } else if (baseHref.includes('yandex.ru')) {
+                    card.href = `https://yandex.ru{cleanNumber}%22`;
+                } else if (baseHref.includes('duckduckgo.com')) {
+                    card.href = `https://duckduckgo.com{cleanNumber}%22`;
+                } else if (baseHref.includes('bing.com')) {
+                    card.href = `https://bing.com{cleanNumber}%22`;
+                } else if (baseHref.includes('intelx.io')) {
+                    card.href = `https://intelx.io{cleanNumber}`;
+                } else if (baseHref.includes('leakcheck.io')) {
+                    card.href = `https://leakcheck.io{cleanNumber}`;
+                } else if (baseHref.includes('numlookup.com')) {
+                    card.href = `https://numlookup.com{cleanNumber}`;
+                }
+            });
+        });
+    }
 });
