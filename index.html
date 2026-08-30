@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT по номеру телефона</title>
+    <!-- Подключаем современные шрифты и иконки -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h1>OSINT Телефонный Справочник</h1>
+            </div>
+            <p class="subtitle">Инструменты для поиска и анализа информации по номеру телефона</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Категория 1: Определение оператора и региона -->
+        <section class="category-section">
+            <div class="category-header">
+                <i class="fa-solid fa-tower-cell"></i>
+                <h2>Определение оператора и региона</h2>
+            </div>
+            <div class="grid">
+                <a href="https://whoismyoperator.ru" target="_blank" class="card">
+                    <div class="card-icon"><i class="fa-solid fa-globe"></i></div>
+                    <div class="card-info">
+                        <h3>whoismyoperator.ru</h3>
+                        <p>Быстрая проверка текущего оператора связи.</p>
+                    </div>
+                </a>
+                <a href="https://banki.ru" target="_blank" class="card">
+                    <div class="card-icon"><i class="fa-solid fa-building-columns"></i></div>
+                    <div class="card-info">
+                        <h3>banki.ru</h3>
+                        <p>Поиск региона и привязки номера через базы данных.</p>
+                    </div>
+                </a>
+                <div class="card generic">
+                    <div class="card-icon"><i class="fa-solid fa-sim-card"></i></div>
+                    <div class="card-info">
+                        <h3>Сайты операторов</h3>
+                        <p>Официальные сервисы МТС, Билайн, МегаФон, Tele2.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Место для следующих категорий (добавим на следующих шагах) -->
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 OSINT Toolkit. Собрано на основе открытых источников.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
