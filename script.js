@@ -5,55 +5,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const log = document.getElementById('terminalLog');
     const report = document.getElementById('osintReport');
 
+    // !!! ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ С RENDER ВНУТРЬ КАВЫЧЕК !!!
+    const BACKEND_URL = "https://osint-r83a.onrender.com/"; 
+
     if (!scanBtn) return;
 
-    scanBtn.addEventListener('click', () => {
+    scanBtn.addEventListener('click', async () => {
         const value = targetInput.value.trim();
         if (!value) {
             alert('Пожалуйста, введите целевой номер телефона!');
             return;
         }
 
-        // Очищаем номер: оставляем только цифры (например, 79641619164)
         const cleanNumber = value.replace(/\D/g, '');
 
-        // Скрываем прошлые результаты и запускаем анимацию терминала
+        // Анимация запуска терминала
         report.classList.add('hidden');
         terminal.classList.remove('hidden');
-        log.innerHTML = '';
+        log.innerHTML = `<div>[INFO] Инициализация ядра Enigma Core...</div>`;
 
-        const logs = [
-            `[INFO] Инициализация ядра Enigma Core v4.1...`,
-            `[CONNECT] Подключение к модулям внешнего поиска... Успешно.`,
-            `[GENERATE] Сборка поисковых дорков для ключа: ${cleanNumber}`,
-            `[READY] Ссылки для автоматического пробива сформированы.`
-        ];
+        try {
+            log.innerHTML += `<div>[CONNECT] Запрос к Python-серверу баз данных...</div>`;
+            
+            // Отправляем реальный запрос на наш бэкенд на Render
+            const response = await fetch(`${BACKEND_URL}/api/probe`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ phone: cleanNumber })
+            });
 
-        let index = 0;
-        const interval = setInterval(() => {
-            if (index < logs.length) {
-                log.innerHTML += `<div>${logs[index]}</div>`;
-                index++;
-            } else {
-                clearInterval(interval);
-                setTimeout(() => {
-                    terminal.classList.add('hidden');
-                    
-                    // Меняем текст в сводке, чтобы показать, какой номер сейчас в работе
-                    document.getElementById('resRegion').textContent = "Сгенерировано для номера: " + cleanNumber;
-                    document.getElementById('resOperator').textContent = "Готово к переходу в базы";
-                    document.getElementById('resName').textContent = "[Ждет ручного дочеса]";
-                    document.getElementById('resEmail').textContent = "[Проверьте ссылки ниже]";
+            if (!response.ok) throw new Error('Ошибка ответа сервера');
+            
+            const data = await response.json();
 
-                    // НАСТОЯЩАЯ АВТОМАТИЗАЦИЯ: подставляем реальный номер в ссылки поисковиков
-                    document.getElementById('lnGoogle').href = `https://google.com{cleanNumber}%22+OR+%22%2B7+${cleanNumber.substring(1,4)}+${cleanNumber.substring(4,7)}-${cleanNumber.substring(7,9)}-${cleanNumber.substring(9,11)}%22`;
-                    document.getElementById('lnYandex').href = `https://yandex.ru{cleanNumber}%22`;
-                    document.getElementById('lnLeak').href = `https://leakcheck.io{cleanNumber}`;
+            log.innerHTML += `<div>[SUCCESS] Данные получены. Декодирование отчета...</div>`;
 
-                    // Показываем блок со ссылками
-                    report.classList.remove('hidden');
-                }, 500);
-            }
-        }, 400);
+            setTimeout(() => {
+                terminal.classList.add('hidden');
+
+                // Подставляем НАСТОЯЩИЕ данные от Python в нашу таблицу на экране!
+                document.getElementById('resRegion').textContent = data.meta.region || "Не определен";
+                document.getElementById('resOperator').textContent = data.meta.operator || "Не определен";
+                document.getElementById('resName').textContent = data.leaks.suggested_name || "Не найдено";
+                document.getElementById('resEmail').textContent = data.leaks.associated_email || "Не найдено";
+
+                // Адаптируем внешние ссылки-дорки под новый чистый номер
+                document.getElementById('lnGoogle').href = `https://google.com{cleanNumber}%22`;
+                document.getElementById('lnYandex').href = `https://yandex.ru{cleanNumber}%22`;
+                document.getElementById('lnLeak').href = `https://leakcheck.io{cleanNumber}`;
+
+                report.classList.remove('hidden');
+            }, 1000);
+
+        } catch (error) {
+            log.innerHTML += `<div style="color: #ff5f56;">[ERROR] Не удалось связаться с бэкендом: ${error.message}</div>`;
+        }
     });
 });
