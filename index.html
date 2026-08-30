@@ -19,13 +19,19 @@
             </div>
             <p class="subtitle">Инструменты для поиска и анализа информации по номеру телефона</p>
             
-            <!-- Интерактивная поисковая строка -->
-            <div class="search-container">
-                <i class="fa-solid fa-terminal search-icon"></i>
-                <input type="text" id="osintSearch" placeholder="[root@osint-hub]# Начните вводить название сервиса для фильтрации..." autocomplete="off">
+                        <!-- Панель управления: Ввод цели + Фильтр -->
+            <div class="control-panel">
+                <div class="input-box animate-border">
+                    <i class="fa-solid fa-phone-flip target-icon"></i>
+                    <input type="tel" id="osintTarget" placeholder="[target_phone]: +79991234567" autocomplete="off">
+                </div>
+                
+                <div class="input-box">
+                    <i class="fa-solid fa-terminal search-icon"></i>
+                    <input type="text" id="osintSearch" placeholder="[filter]: Название сервиса..." autocomplete="off">
+                </div>
             </div>
-        </div>
-    </header>
+
 
     <main class="container">
         <!-- Категория 1: Определение оператора и региона -->
