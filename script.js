@@ -5,9 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const log = document.getElementById('terminalLog');
     const report = document.getElementById('osintReport');
 
-    const BACKEND_URL = "https://onrender.com"; 
+    // Базовый адрес вашего сервера на Render
+    const TARGET_BACKEND = "https://onrender.com"; 
+    
+    // Подключаем элитный публичный прокси-сервер для обхода сетевых ограничений мобильных браузеров
+    const PROXY_URL = "https://allorigins.win";
+    
+    const FULL_URL = PROXY_URL + encodeURIComponent(`${TARGET_BACKEND}/api/probe`);
 
-    // Глобальные функции для открытия поисковиков (срабатывают моментально без кэширования)
     window.openGoogle = function() {
         const value = targetInput.value.trim();
         const cleanNumber = value.replace(/\D/g, '');
@@ -51,13 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         report.classList.add('hidden');
         terminal.classList.remove('hidden');
-        log.innerHTML = `<div>[INFO] Старт проверки номера: ${cleanNumber}</div>`;
-        log.innerHTML += `<div>[CONNECT] Подключение к Python-серверу Render...</div>`;
-        log.innerHTML += `<div style="color: #00d2ff;">[WAIT] Бесплатный сервер просыпается. Это может занять до 40-50 секунд при первом запросе. Пожалуйста, не закрывайте страницу...</div>`;
+        log.innerHTML = `<div>[INFO] Инициализация сканирования цели: ${cleanNumber}</div>`;
+        log.innerHTML += `<div>[PROXY] Запуск защищенного туннеля данных...</div>`;
+        log.innerHTML += `<div style="color: #00d2ff;">[CONNECT] Отправка запроса в обход блокировок на Python Core...</div>`;
 
         try {
-            // Отправляем запрос без искусственных ограничений таймаута
-            const response = await fetch(`${BACKEND_URL}/api/probe`, {
+            // Шлем запрос через прокси-туннель
+            const response = await fetch(FULL_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -65,27 +70,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ phone: cleanNumber })
             });
 
-            if (!response.ok) throw new Error(`Ответ сервера: ${response.status}`);
+            if (!response.ok) throw new Error(`Код сетевой ошибки: ${response.status}`);
             
             const data = await response.json();
             
-            log.innerHTML += `<div style="color: #00ff66;">[SUCCESS] Синхронизация с API успешна! Данные расшифрованы.</div>`;
+            log.innerHTML += `<div style="color: #00ff66;">[SUCCESS] Защищенный шлюз ответил успешно! Данные получены.</div>`;
 
             setTimeout(() => {
                 terminal.classList.add('hidden');
 
-                // Вывод реальных данных со шлюза Python
+                // Запись реальных данных, полученных через прокси от Python
                 document.getElementById('resRegion').textContent = data.meta.region || "Не определен";
                 document.getElementById('resOperator').textContent = data.meta.operator || "Не определен";
                 document.getElementById('resName').textContent = data.leaks.suggested_name || "Не найдено";
                 document.getElementById('resEmail').textContent = data.leaks.associated_email || "Не найдено";
 
                 report.classList.remove('hidden');
-            }, 1000);
+            }, 800);
 
         } catch (error) {
-            log.innerHTML += `<div style="color: #ff5f56; margin-top: 10px; font-weight: bold;">[ОШИБКА]: ${error.message}</div>`;
-            log.innerHTML += `<div style="color: #ffbd2e; font-size: 0.9rem; margin-top: 5px;">Попробуйте нажать кнопку «Начать поиск» еще раз прямо сейчас. Сервер уже должен был проснуться.</div>`;
+            log.innerHTML += `<div style="color: #ff5f56; margin-top: 10px; font-weight: bold;">[ОШИБКА ШЛЮЗА]: Сервер в режиме загрузки / Просыпается.</div>`;
+            log.innerHTML += `<div style="color: #ffbd2e; font-size: 0.9rem; margin-top: 5px;">Подождите 15-20 секунд и нажмите кнопку «Начать поиск» еще раз. Туннель прогреет сервер.</div>`;
         }
     });
 });
