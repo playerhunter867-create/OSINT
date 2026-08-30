@@ -21,7 +21,7 @@
             <div class="control-panel">
                 <div class="input-box">
                     <i class="fa-solid fa-phone-flip target-icon"></i>
-                    <input type="tel" id="osintTarget" placeholder="Введите номер: +79964193858" autocomplete="off">
+                    <input type="tel" id="osintTarget" placeholder="Введите номер: +79894620360" autocomplete="off">
                 </div>
                 <button id="startScanBtn"><i class="fa-solid fa-satellite-dish"></i> Начать поиск</button>
             </div>
@@ -38,7 +38,7 @@
             <div id="terminalLog" class="terminal-content"></div>
         </div>
 
-        <!-- КОРНЕВОЙ БЛОК ВЫВОДА РЕЗУЛЬТАТОВ -->
+        <!-- БЛОК ВЫВОДА РЕЗУЛЬТАТОВ -->
         <div id="osintReport" class="report-container hidden">
             
             <!-- Общая сводка -->
@@ -47,10 +47,10 @@
                     <i class="fa-solid fa-address-card"></i> Общая сводка
                 </div>
                 <div class="report-card-body">
-                    <div class="info-row"><strong>Страна/Регион:</strong> <span id="resRegion">Запрос обрабатывается...</span></div>
-                    <div class="info-row"><strong>Оператор:</strong> <span id="resOperator">Проверка реестров...</span></div>
-                    <div class="info-row"><strong>Возможные Личности:</strong> <span class="badge" id="resName">Поиск совпадений...</span></div>
-                    <div class="info-row"><strong>Связанные Email:</strong> <span class="badge blue" id="resEmail">Анализ утечек...</span></div>
+                    <div class="info-row"><strong>Страна/Регион:</strong> <span id="resRegion">Анализ...</span></div>
+                    <div class="info-row"><strong>Оператор:</strong> <span id="resOperator">Анализ...</span></div>
+                    <div class="info-row"><strong>Возможные Личности:</strong> <span class="badge" id="resName">Поиск...</span></div>
+                    <div class="info-row"><strong>Связанные Email:</strong> <span class="badge blue" id="resEmail">Поиск...</span></div>
                 </div>
             </div>
 
@@ -67,15 +67,15 @@
                 </div>
             </div>
 
-            <!-- Бронебойные кнопки глубокого поиска -->
+            <!-- Кнопки внешнего глубокого поиска (Чистый HTML без JS-переменных внутри тегов) -->
             <div class="report-card">
                 <div class="report-card-header">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> Внешний глубокий поиск
                 </div>
                 <div class="report-card-body quick-links">
-                    <button onclick="window.openGoogle()" class="osint-link-btn"><i class="fa-brands fa-google"></i> Google Дорк</button>
-                    <button onclick="window.openYandex()" class="osint-link-btn"><i class="fa-solid fa-y"></i> Яндекс Поиск</button>
-                    <button onclick="window.openLeakCheck()" class="osint-link-btn"><i class="fa-solid fa-key"></i> Проверить пароли</button>
+                    <button type="button" id="btnGoogle" class="osint-link-btn"><i class="fa-brands fa-google"></i> Google Дорк</button>
+                    <button type="button" id="btnYandex" class="osint-link-btn"><i class="fa-solid fa-y"></i> Яндекс Поиск</button>
+                    <button type="button" id="btnLeak" class="osint-link-btn"><i class="fa-solid fa-key"></i> Проверить пароли</button>
                 </div>
             </div>
 
@@ -86,7 +86,7 @@
         <p>&copy; 2026 ENIGMA Search Engine. Элитная панель мониторинга.</p>
     </footer>
 
-    <script src="script.js?v=2"></script>
-
+    <!-- ПОДКЛЮЧАЕМ НОВЫЙ ФАЙЛ MAIN.JS -->
+    <script src="main.js"></script>
 </body>
 </html>
