@@ -1,4 +1,65 @@
-<!-- Категория 2: Проверка номера на утечки и базы -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT по номеру телефона</title>
+    <!-- Подключаем современные шрифты и иконки -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h1>OSINT Телефонный Справочник</h1>
+            </div>
+            <p class="subtitle">Инструменты для поиска и анализа информации по номеру телефона</p>
+            
+            <!-- Интерактивная поисковая строка -->
+            <div class="search-container">
+                <i class="fa-solid fa-terminal search-icon"></i>
+                <input type="text" id="osintSearch" placeholder="[root@osint-hub]# Начните вводить название сервиса для фильтрации..." autocomplete="off">
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Категория 1: Определение оператора и региона -->
+        <section class="category-section">
+            <div class="category-header">
+                <i class="fa-solid fa-tower-cell"></i>
+                <h2>Определение оператора и региона</h2>
+            </div>
+            <div class="grid">
+                <a href="https://whoismyoperator.ru" target="_blank" class="card">
+                    <div class="card-icon"><i class="fa-solid fa-globe"></i></div>
+                    <div class="card-info">
+                        <h3>whoismyoperator.ru</h3>
+                        <p>Быстрая проверка текущего оператора связи.</p>
+                    </div>
+                </a>
+                <a href="https://banki.ru" target="_blank" class="card">
+                    <div class="card-icon"><i class="fa-solid fa-building-columns"></i></div>
+                    <div class="card-info">
+                        <h3>banki.ru</h3>
+                        <p>Поиск региона и привязки номера через базы данных.</p>
+                    </div>
+                </a>
+                <div class="card generic">
+                    <div class="card-icon"><i class="fa-solid fa-sim-card"></i></div>
+                    <div class="card-info">
+                        <h3>Сайты операторов</h3>
+                        <p>Официальные сервисы МТС, Билайн, МегаФон, Tele2.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Категория 2: Проверка номера на утечки и базы -->
         <section class="category-section">
             <div class="category-header">
                 <i class="fa-solid fa-database"></i>
@@ -27,8 +88,8 @@
                     </div>
                 </a>
                 <a href="https://leakcheck.io" target="_blank" class="card">
+                    <div class="card-icon"><i class="fa-solid fa-key"></i></div>
                     <div class="card-info">
-                        <div class="card-icon"><i class="fa-solid fa-key"></i></div>
                         <h3>LeakCheck (leakcheck.io)</h3>
                         <p>Проверка привязки номера телефона к утекшим паролям и аккаунтам.</p>
                     </div>
@@ -94,7 +155,8 @@
                 </a>
             </div>
         </section>
-<!-- Категория 4: Поиск объявлений и активностей -->
+
+        <!-- Категория 4: Поиск объявлений и активностей -->
         <section class="category-section">
             <div class="category-header">
                 <i class="fa-solid fa-rectangle-ad"></i>
@@ -143,174 +205,3 @@
                     <div class="card-icon"><i class="fa-solid fa-phone-volume"></i></div>
                     <div class="card-info">
                         <h3>Truecaller</h3>
-                        <p>Глобальная база телефонных номеров и имен со всего мира.</p>
-                    </div>
-                </a>
-                <a href="https://numlookup.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-address-card"></i></div>
-                    <div class="card-info">
-                        <h3>NumLookup</h3>
-                        <p>Бесплатный обратный поиск по зарубежным номерам телефонов.</p>
-                    </div>
-                </a>
-                <a href="https://spydialer.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-user-secret"></i></div>
-                    <div class="card-info">
-                        <h3>SpyDialer</h3>
-                        <p>Поиск информации по международным номерам (США/Европа).</p>
-                    </div>
-                </a>
-                <a href="https://sync.me" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-rotate"></i></div>
-                    <div class="card-info">
-                        <h3>Sync.me</h3>
-                        <p>Идентификация вызывающего абонента и синхронизация фото профилей.</p>
-                    </div>
-                </a>
-                <a href="https://github.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-terminal"></i></div>
-                    <div class="card-info">
-                        <h3>PhoneInfoga</h3>
-                        <p>Продвинутый CLI-инструмент для сканирования телефонных номеров.</p>
-                    </div>
-                </a>
-            </div>
-        </section>      
-         <!-- Категория 6: Поиск в поисковых системах -->
-        <section class="category-section">
-            <div class="category-header">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <h2>Поиск в поисковых системах</h2>
-            </div>
-            <div class="grid">
-                <a href="https://google.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-brands fa-google"></i></div>
-                    <div class="card-info">
-                        <h3>Google</h3>
-                        <p>Поиск точных совпадений номера с помощью поисковых операторов (дорков).</p>
-                    </div>
-                </a>
-                <a href="https://yandex.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-y"></i></div>
-                    <div class="card-info">
-                        <h3>Яндекс</h3>
-                        <p>Эффективный поиск по российскому сегменту интернета и кэшу страниц.</p>
-                    </div>
-                </a>
-                <a href="https://bing.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-b"></i></div>
-                    <div class="card-info">
-                        <h3>Bing</h3>
-                        <p>Альтернативный краулинг зарубежных и старых архивных веб-страниц.</p>
-                    </div>
-                </a>
-                <a href="https://duckduckgo.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-duck"></i></div>
-                    <div class="card-info">
-                        <h3>DuckDuckGo</h3>
-                        <p>Конфиденциальный поиск без фильтрации результатов по геолокации.</p>
-                    </div>
-                </a>
-            </div>
-        </section>
-
-        <!-- Категория 7: Проверка в справочниках и каталогах -->
-        <section class="category-section">
-            <div class="category-header">
-                <i class="fa-solid fa-address-book"></i>
-                <h2>Проверка в справочниках и каталогах</h2>
-            </div>
-            <div class="grid">
-                <a href="https://2gis.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-map-location-dot"></i></div>
-                    <div class="card-info">
-                        <h3>2GIS</h3>
-                        <p>Поиск организаций и коммерческих компаний, привязанных к номеру.</p>
-                    </div>
-                </a>
-                <a href="https://yandex.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-heading"></i></div>
-                    <div class="card-info">
-                        <h3>Яндекс.Справочник</h3>
-                        <p>Идентификация бизнес-номеров через базу Яндекс.Бизнеса.</p>
-                    </div>
-                </a>
-                <a href="https://zoon.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-z"></i></div>
-                    <div class="card-info">
-                        <h3>Zoon</h3>
-                        <p>Проверка отзывов и упоминаний номера в карточках услуг и заведений.</p>
-                    </div>
-                </a>
-                <a href="https://flamp.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-f"></i></div>
-                    <div class="card-info">
-                        <h3>Flamp</h3>
-                        <p>Анализ комментариев и активности компаний по номеру телефона.</p>
-                    </div>
-                </a>
-            </div>
-        </section>
-
-        <!-- Категория 8: Проверка через почту и мессенджеры -->
-        <section class="category-section">
-            <div class="category-header">
-                <i class="fa-solid fa-envelope-open-text"></i>
-                <h2>Проверка через почту и мессенджеры</h2>
-            </div>
-            <div class="grid">
-                <a href="https://mail.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-at"></i></div>
-                    <div class="card-info">
-                        <h3>Почта Mail.ru</h3>
-                        <p>Поиск связанных почтовых ящиков через форму восстановления доступа.</p>
-                    </div>
-                </a>
-                <a href="https://gmail.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-g"></i></div>
-                    <div class="card-info">
-                        <h3>Gmail</h3>
-                        <p>Идентификация Google-аккаунта, аватара и имени владельца.</p>
-                    </div>
-                </a>
-                <div class="card generic">
-                    <div class="card-icon"><i class="fa-brands fa-telegram"></i></div>
-                    <div class="card-info">
-                        <h3>Telegram (поиск по номеру)</h3>
-                        <p>Перекрестная сверка юзернеймов и ID, привязанных к сим-карте.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Категория 9: Проверка геолокации -->
-        <section class="category-section">
-            <div class="category-header">
-                <i class="fa-solid fa-location-crosshairs"></i>
-                <h2>Проверка геолокации (если доступно)</h2>
-            </div>
-            <div class="grid">
-                <a href="https://google.com" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-map"></i></div>
-                    <div class="card-info">
-                        <h3>Google Карты</h3>
-                        <p>Проверка геометок организаций и хронологии отзывов профиля.</p>
-                    </div>
-                </a>
-                <a href="https://yandex.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-route"></i></div>
-                    <div class="card-info">
-                        <h3>Яндекс Карты</h3>
-                        <p>Привязка адресов филиалов и точек продаж к проверяемому контакту.</p>
-                    </div>
-                </a>
-                <a href="https://2gis.ru" target="_blank" class="card">
-                    <div class="card-icon"><i class="fa-solid fa-compass"></i></div>
-                    <div class="card-info">
-                        <h3>2GIS Геоданные</h3>
-                        <p>Локализация региона абонента по внутренней базе координат инфраструктуры.</p>
-                    </div>
-                </a>
-            </div>
-        </section>
-       
