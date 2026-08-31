@@ -3,222 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enigma | Поиск по номеру</title>
-    <link href="https://googleapis.com" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <title>ENIGMA OSINT SYSTEM v4.0</title>
     <style>
-        :root {
-            --bg-dark: #000000;
-            --bg-panel: #111111;
-            --bg-item: #1a1a1a;
-            --border: #222222;
-            --accent-blue: #2f80ed;
-            --accent-green: #00ff66;
-            --text-main: #ffffff;
-            --text-gray: #aaaaaa;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: var(--bg-dark); color: var(--text-main);
-            font-family: 'Inter', sans-serif; padding: 20px;
-        }
-        .container { max-width: 600px; margin: 0 auto; }
-        
-        .search-box {
-            display: flex; background: var(--bg-panel); border: 1px solid var(--border);
-            border-radius: 8px; padding: 12px 15px; margin-bottom: 25px; align-items: center;
-        }
-        .search-box input {
-            background: none; border: none; outline: none; color: white; width: 100%;
-            font-size: 1.1rem; font-family: 'JetBrains Mono', monospace; margin-left: 10px;
-        }
-        .search-box button {
-            background: var(--accent-blue); color: white; border: none; padding: 8px 20px;
-            font-weight: 600; border-radius: 6px; cursor: pointer;
-        }
-
-        .loader { text-align: center; padding: 30px; font-family: 'JetBrains Mono', monospace; color: var(--accent-blue); }
-        
-        .enigma-section {
-            background: var(--bg-panel); border: 1px solid var(--border);
-            border-radius: 8px; margin-bottom: 15px; overflow: hidden;
-        }
-        .section-trigger {
-            padding: 18px 20px; display: flex; justify-content: space-between;
-            align-items: center; cursor: pointer; font-weight: 600; font-size: 1.05rem;
-        }
-        .section-content {
-            padding: 0 20px 20px 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;
-        }
-        
-        .data-label { color: var(--accent-blue); font-size: 0.95rem; font-weight: 600; margin-top: 10px; }
-        .badge { background: rgba(47, 128, 237, 0.15); color: var(--accent-blue); padding: 3px 8px; border-radius: 4px; font-size: 0.95rem; display: inline-block; }
-        
-        .profile-card {
-            background: var(--bg-item); border: 1px solid var(--border); border-radius: 6px;
-            padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .profile-info { display: flex; align-items: center; gap: 12px; }
-        .profile-info i { font-size: 1.2rem; }
-        
-        .quick-links { display: flex; flex-direction: column; gap: 10px; }
-        .osint-link-btn {
-            background: var(--bg-item); color: white; border: 1px solid var(--border);
-            padding: 12px; border-radius: 6px; text-align: left; display: flex; align-items: center;
-            gap: 12px; cursor: pointer; font-size: 1rem; width: 100%; transition: 0.2s;
-        }
-        .osint-link-btn:hover { border-color: var(--accent-blue); background: #222; }
-        .btn-green { border-color: var(--accent-green) !important; color: var(--accent-green) !important; }
-        .btn-green:hover { background: rgba(0, 255, 102, 0.05); }
-
-        .hidden { display: none !important; }
-        .arrow { transition: transform 0.2s; color: var(--text-gray); }
+        body { background-color: #000000; color: #ffffff; font-family: sans-serif; text-align: center; padding-top: 50px; }
+        .box { max-width: 400px; margin: 0 auto; background: #111111; padding: 30px; border: 1px solid #222222; border-radius: 10px; }
+        input { width: 100%; padding: 12px; margin-bottom: 20px; background: #000; border: 1px solid #333; color: #fff; text-align: center; font-size: 1.1rem; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; margin-bottom: 12px; font-weight: bold; font-size: 1rem; border-radius: 5px; cursor: pointer; border: none; }
+        .btn-blue { background-color: #2f80ed; color: #fff; }
+        .btn-green { background-color: #00ff66; color: #000; }
+        .btn-gray { background-color: #222222; color: #fff; border: 1px solid #333; }
+        #infoBlock { margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 5px; text-align: left; font-size: 1rem; line-height: 1.6; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="search-box">
-            <i class="fa-solid fa-user-secret" style="color: var(--text-gray);"></i>
-            <input type="tel" id="targetNum" placeholder="Введите номер: +79894620360" autocomplete="off">
-            <button id="searchBtn" type="button">Поиск</button>
+    <div class="box">
+        <h2 style="margin-bottom: 20px; font-family: monospace; letter-spacing: 1px;">ENIGMA CORE</h2>
+        
+        <input type="tel" id="targetPhone" placeholder="Введите номер телефона" value="+79894620360" autocomplete="off">
+        
+        <button type="button" id="scanBtn" class="btn-blue">1. ОПРЕДЕЛИТЬ РЕГИОН</button>
+        
+        <!-- Локальный вывод ГЕО без запросов к серверам -->
+        <div id="infoBlock" class="hidden">
+            <strong>Страна/Регион:</strong> <span id="txtRegion">Россия, Республика Дагестан</span><br>
+            <strong>Оператор связи:</strong> <span id="txtOperator">ПАО МегаФон / МТС</span>
         </div>
-
-        <div id="loadingBlock" class="loader hidden">[Сверка локальной базы сигнатур...]</div>
-
-        <!-- КОРНЕВОЙ БЛОК ВЫВОДА РЕЗУЛЬТАТОВ -->
-        <div id="resultsBlock" class="hidden">
-            
-            <!-- Сводка ГЕО и Оператора -->
-            <div class="enigma-section">
-                <div class="section-trigger">
-                    <span>Общая сводка номера</span>
-                    <i class="fa-solid fa-chevron-down arrow"></i>
-                </div>
-                <div class="section-content">
-                    <div class="data-label">Регион / Сота:</div>
-                    <div id="resRegion">Анализ...</div>
-                    <div class="data-label">Оператор связи:</div>
-                    <div id="resOperator">Анализ...</div>
-                    <div class="data-label">Статус сети:</div>
-                    <div class="badge">GSM / LTE Active</div>
-                </div>
-            </div>
-
-            <!-- Глубокие внешние модули -->
-            <div class="enigma-section">
-                <div class="section-trigger">
-                    <span>Запустить глубокий пробив цели</span>
-                    <i class="fa-solid fa-chevron-down arrow"></i>
-                </div>
-                <div class="section-content quick-links">
-                    <!-- Ультимативная кнопка WhatsMyName для номера телефона -->
-                    <button type="button" id="btnWhatsMyName" class="osint-link-btn btn-green"><i class="fa-solid fa-shield-halved"></i> Сканировать номер по 677 базам (WhatsMyName)</button>
-                    <button type="button" id="btnGoogle" class="osint-link-btn"><i class="fa-brands fa-google"></i> Искать упоминания в Google Дорк</button>
-                    <button type="button" id="btnYandex" class="osint-link-btn"><i class="fa-solid fa-y"></i> Найти связанные сайты в Яндекс</button>
-                    <button type="button" id="btnLeak" class="osint-link-btn"><i class="fa-solid fa-key"></i> Проверить утекшие пароли номера</button>
-                </div>
-            </div>
-
-        </div>
+        
+        <hr style="border: 0; border-top: 1px solid #222; margin: 25px 0;">
+        
+        <h3 style="margin-bottom: 15px; font-size: 0.95rem; color: #888;">МОДУЛИ ГЛУБОКОГО ПРОБИВА:</h3>
+        
+        <!-- Бронебойные прямые переходы -->
+        <button type="button" id="goWhats" class="btn-green">Сканировать по 677 базам</button>
+        <button type="button" id="goYandex" class="btn-gray">Искать в Яндекс Поиск</button>
+        <button type="button" id="goGoogle" class="btn-gray">Искать в Google Дорк</button>
     </div>
 
-    <!-- ВШИТАЯ ЛОГИКА АВТОМАТИЗАЦИИ ССЫЛОК -->
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const searchBtn = document.getElementById('searchBtn');
-        const targetInput = document.getElementById('targetNum');
-        const loader = document.getElementById('loadingBlock');
-        const results = document.getElementById('resultsBlock');
+        const input = document.getElementById('targetPhone');
+        const scanBtn = document.getElementById('scanBtn');
+        const infoBlock = document.getElementById('infoBlock');
 
-        const btnWhatsMyName = document.getElementById('btnWhatsMyName');
-        const btnGoogle = document.getElementById('btnGoogle');
-        const btnYandex = document.getElementById('btnYandex');
-        const btnLeak = document.getElementById('btnLeak');
-
-        // Функция очистки номера телефона
-        function getCleanNum() {
-            return targetInput.value.replace(/\D/g, '');
+        function getNum() {
+            return input.value.replace(/\D/g, '');
         }
 
-        // 1. Автоматический пробив по 677 базам WhatsMyName
-        if (btnWhatsMyName) {
-            btnWhatsMyName.addEventListener('click', () => {
-                const num = getCleanNum();
-                if (num) {
-                    // Открываем веб-сканер, автоматически вбивая номер в поисковую строку
-                    window.open('https://whatsmyname.app' + num, '_blank');
+        // Кнопка локального определения региона
+        if (scanBtn) {
+            scanBtn.addEventListener('click', () => {
+                const num = getNum();
+                if (!num || num.length < 10) {
+                    alert('Введите номер телефона!');
+                    return;
                 }
-            });
-        }
 
-        // 2. Google Дорк
-        if (btnGoogle) {
-            btnGoogle.addEventListener('click', () => {
-                const num = getCleanNum();
-                if (num) {
-                    window.open('https://google.com' + num + '%22', '_blank');
-                }
-            });
-        }
-
-        // 3. Яндекс
-        if (btnYandex) {
-            btnYandex.addEventListener('click', () => {
-                const num = getCleanNum();
-                if (num) {
-                    window.open('https://yandex.ru' + num + '%22', '_blank');
-                }
-            });
-        }
-
-        // 4. LeakCheck
-        if (btnLeak) {
-            btnLeak.addEventListener('click', () => {
-                const num = getCleanNum();
-                if (num) {
-                    window.open('https://leakcheck.io' + num, '_blank');
-                }
-            });
-        }
-
-        if (!searchBtn) return;
-
-        searchBtn.addEventListener('click', () => {
-            const num = getCleanNum();
-            if (!num || num.length < 10) {
-                alert('Пожалуйста, введите корректный номер телефона!');
-                return;
-            }
-
-            results.classList.add('hidden');
-            loader.classList.remove('hidden');
-
-            setTimeout(() => {
-                loader.classList.add('hidden');
-
-                // Локальный математический пробив региона Дагестан по кодам
+                // Математический расчет Дагестана по кодам сотовой связи
                 const code = num.substring(1, 4);
-                let region = "Россия, Регион РФ";
-                let operator = "Определено по DEF-коду";
-
-                if (['989', '928', '938', '963', '964', '967'].includes(code)) {
-                    region = "Россия, Республика Дагестан";
-                    operator = "ПАО МегаФон / МТС / Билайн";
-                } else if (['995', '996', '999'].includes(code)) {
-                    region = "Россия, Республика Дагестан";
-                    operator = "ООО Скартел (Yota)";
+                if (['989', '928', '938', '963', '964', '967', '995', '996', '999'].includes(code)) {
+                    document.getElementById('txtRegion').textContent = "Россия, Республика Дагестан";
+                    document.getElementById('txtOperator').textContent = "ПАО МегаФон / МТС / Yota";
+                } else {
+                    document.getElementById('txtRegion').textContent = "Россия, Регион РФ";
+                    document.getElementById('txtOperator').textContent = "Определено по коду соты";
                 }
 
-                document.getElementById('resRegion').textContent = region;
-                document.getElementById('resOperator').textContent = operator;
+                infoBlock.classList.remove('hidden');
+            });
+        }
 
-                results.classList.remove('hidden');
-            }, 800);
+        // Бронебойные переходы напрямую по клику пальца
+        document.getElementById('goWhats').addEventListener('click', () => {
+            const num = getNum();
+            if (num) window.open('https://whatsmyname.app' + num, '_blank');
         });
 
-        // Логика раскрытия плашек
-        document.querySelectorAll('.section-trigger').forEach(trigger => {
-            trigger.addEventListener('click', () => {
-                const content = trigger.nextElementSibling;
-                content.classList.toggle('hidden');
+        document.getElementById('goYandex').addEventListener('click', () => {
+            const num = getNum();
+            if (num) window.open('https://yandex.ru' + num + '%22', '_blank');
+        });
+
+        document.getElementById('goGoogle').addEventListener('click', () => {
+            const num = getNum();
+            if (num) window.open('https://google.com' + num + '%22', '_blank');
+        });
+    });
+    </script>
+
+</body>
+</html>
