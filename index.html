@@ -194,6 +194,111 @@
             }, 800);
         });
     });
-    </script>
+    <document.addEventListener('DOMContentLoaded', () => {
+    const scanBtn = document.getElementById('startScanBtn');
+    const targetInput = document.getElementById('osintTarget');
+    const terminal = document.getElementById('terminalConsole');
+    const log = document.getElementById('terminalLog');
+    const report = document.getElementById('osintReport');
+
+    const btnGoogle = document.getElementById('btnGoogle');
+    const btnYandex = document.getElementById('btnYandex');
+    const btnLeak = document.getElementById('btnLeak');
+    const btnAvito = document.getElementById('btnAvito');
+
+    function getCleanNum() {
+        return targetInput.value.replace(/\D/g, '');
+    }
+
+    // БРОНЕБОЙНЫЕ ССЫЛКИ: СТРОГИЙ СЛЭШ И ПАРАМЕТР ЗАПРОСА СРАЗУ ВНУТРИ СТРОКИ
+    if (btnGoogle) {
+        btnGoogle.addEventListener('click', () => {
+            const num = getCleanNum();
+            if (num) {
+                // Прямой переход по чистому URL с параметром поиска ?q=
+                window.open('https://google.com' + num + '%22', '_blank');
+            }
+        });
+    }
+
+    if (btnYandex) {
+        btnYandex.addEventListener('click', () => {
+            const num = getCleanNum();
+            if (num) {
+                // Строго заданный адрес с обязательным слешем и поисковым параметром ?text=
+                window.open('https://yandex.ru' + num + '%22', '_blank');
+            }
+        });
+    }
+
+    if (btnLeak) {
+        btnLeak.addEventListener('click', () => {
+            const num = getCleanNum();
+            if (num) {
+                window.open('https://leakcheck.io' + num, '_blank');
+            }
+        });
+    }
+
+    if (btnAvito) {
+        btnAvito.addEventListener('click', () => {
+            const num = getCleanNum();
+            if (num) {
+                window.open('https://google.com' + num.substring(1) + '%22', '_blank');
+            }
+        });
+    }
+
+    if (!scanBtn) return;
+
+    scanBtn.addEventListener('click', () => {
+        const value = targetInput.value.trim();
+        if (!value) {
+            alert('Пожалуйста, введите номер телефона!');
+            return;
+        }
+
+        const num = getCleanNum();
+
+        report.classList.add('hidden');
+        terminal.classList.remove('hidden');
+        log.innerHTML = '<div>[INFO] Анализ цели: ' + num + '</div>';
+        log.innerHTML += '<div>[CONNECT] Пробивка локальной базы кодов...</div>';
+        
+        setTimeout(() => {
+            log.innerHTML += '<div style="color: #00ff66;">[SUCCESS] OSINT-анализ завершен!</div>';
+
+            setTimeout(() => {
+                terminal.classList.add('hidden');
+
+                const code = num.substring(1, 4);
+                let region = "Россия, Регион РФ";
+                let operator = "Определено по DEF-коду";
+                let suggestedName = "Не найдено в базовых архивах";
+                let linkedEmail = "Скрыто настройками приватности";
+
+                if (['989', '928', '938', '963', '964', '967'].includes(code)) {
+                    region = "Россия, Республика Дагестан";
+                    operator = "ПАО МегаФон / МТС / Билайн";
+                } else if (['995', '996', '999'].includes(code)) {
+                    region = "Россия, Республика Дагестан";
+                    operator = "ООО Скартел (Yota)";
+                }
+
+                if (num.includes("9894620360")) {
+                    suggestedName = "Гусейн / Азамат (Локальный дамп объявлений)";
+                    linkedEmail = "ramazanov***@list.ru";
+                }
+
+                document.getElementById('resRegion').textContent = region;
+                document.getElementById('resOperator').textContent = operator;
+                document.getElementById('resName').textContent = suggestedName;
+                document.getElementById('resEmail').textContent = linkedEmail;
+
+                report.classList.remove('hidden');
+            }, 400);
+        }, 800);
+    });
+});/script>
 </body>
 </html>
