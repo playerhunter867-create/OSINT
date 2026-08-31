@@ -1,0 +1,31 @@
+# agent / org files #
+######################
+agents/
+.agents/
+
+# vendor packages #
+######################
+public/js/vendor
+node_modules
+bower_components
+
+# generated artifacts #
+######################
+tools/link_audit_report.json
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
