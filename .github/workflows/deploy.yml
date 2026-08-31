@@ -38,7 +38,7 @@ jobs:
           )
 
           if [ "${#ZIPS[@]}" -eq 0 ]; then
-            echo "::error::ZIP file not found in repository root."
+            echo "::error::No ZIP file found."
             exit 1
           fi
 
@@ -63,17 +63,13 @@ jobs:
           rm -rf _extract _site
           mkdir -p _extract _site
 
-          echo "Extracting $ZIP..."
+          echo "Extracting Dashboard..."
 
           unzip -q "$ZIP" -d _extract
 
           mapfile -t TOP < <(
             find _extract -mindepth 1 -maxdepth 1 -print
           )
-
-          # Supports:
-          # ZIP/index.html
-          # ZIP/OSINT-HUB/index.html
 
           if [ "${#TOP[@]}" -eq 1 ] && [ -d "${TOP[0]}" ]; then
             ROOT="${TOP[0]}"
@@ -83,7 +79,6 @@ jobs:
 
           if [ ! -f "$ROOT/index.html" ]; then
             echo "::error::index.html not found."
-            echo "Extracted files:"
             find _extract -maxdepth 3 -type f | sort
             exit 1
           fi
@@ -99,18 +94,25 @@ jobs:
 
           ZIP="$(basename "${{ steps.zip.outputs.zip }}")"
 
-          # Delete old project files.
-          # Keep .git, .github and the original ZIP.
+          echo "Removing old project files..."
+
           find . -mindepth 1 -maxdepth 1 \
             ! -name ".git" \
             ! -name ".github" \
             ! -name "$ZIP" \
+            ! -name "_site" \
+            ! -name "_extract" \
             -exec rm -rf {} +
 
-          # Put extracted Dashboard into repository root.
+          echo "Copying Dashboard..."
+
           cp -a _site/. .
 
-          echo "Repository after extraction:"
+          rm -rf _site _extract
+
+          echo "Repository successfully updated."
+
+          echo "Files:"
           find . -maxdepth 3 -type f \
             ! -path "./.git/*" | sort
 
@@ -132,23 +134,28 @@ jobs:
             git push origin HEAD:main
           fi
 
+      - name: Prepare GitHub Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf _pages
+          mkdir -p _pages
+
+          cp -a . _pages/
+
+          rm -rf _pages/.git
+          rm -rf _pages/_pages
+
+          echo "Pages files:"
+          find _pages -maxdepth 3 -type f | sort
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./_site
+          path: ./_pages
 
-  deploy:
-    needs: prepare
-    runs-on: ubuntu-latest
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  deploy
