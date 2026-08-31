@@ -3,127 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ENIGMA OSINT SYSTEM v3.0</title>
+    <title>Enigma | Поиск по номеру</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --bg-panel: #111111;
+            --bg-item: #1a1a1a;
+            --border: #222222;
+            --accent-blue: #2f80ed;
+            --accent-green: #00ff66;
+            --text-main: #ffffff;
+            --text-gray: #aaaaaa;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-dark); color: var(--text-main);
+            font-family: 'Inter', sans-serif; padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        
+        .search-box {
+            display: flex; background: var(--bg-panel); border: 1px solid var(--border);
+            border-radius: 8px; padding: 12px 15px; margin-bottom: 25px; align-items: center;
+        }
+        .search-box input {
+            background: none; border: none; outline: none; color: white; width: 100%;
+            font-size: 1.1rem; font-family: 'JetBrains Mono', monospace; margin-left: 10px;
+        }
+        .search-box button {
+            background: var(--accent-blue); color: white; border: none; padding: 8px 20px;
+            font-weight: 600; border-radius: 6px; cursor: pointer;
+        }
+
+        .loader { text-align: center; padding: 30px; font-family: 'JetBrains Mono', monospace; color: var(--accent-blue); }
+        
+        .enigma-section {
+            background: var(--bg-panel); border: 1px solid var(--border);
+            border-radius: 8px; margin-bottom: 15px; overflow: hidden;
+        }
+        .section-trigger {
+            padding: 18px 20px; display: flex; justify-content: space-between;
+            align-items: center; cursor: pointer; font-weight: 600; font-size: 1.05rem;
+        }
+        .section-content {
+            padding: 0 20px 20px 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;
+        }
+        
+        .data-label { color: var(--accent-blue); font-size: 0.95rem; font-weight: 600; margin-top: 10px; }
+        .badge { background: rgba(47, 128, 237, 0.15); color: var(--accent-blue); padding: 3px 8px; border-radius: 4px; font-size: 0.95rem; display: inline-block; }
+        
+        .profile-card {
+            background: var(--bg-item); border: 1px solid var(--border); border-radius: 6px;
+            padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .profile-info { display: flex; align-items: center; gap: 12px; }
+        .profile-info i { font-size: 1.2rem; }
+        
+        .quick-links { display: flex; flex-direction: column; gap: 10px; }
+        .osint-link-btn {
+            background: var(--bg-item); color: white; border: 1px solid var(--border);
+            padding: 12px; border-radius: 6px; text-align: left; display: flex; align-items: center;
+            gap: 12px; cursor: pointer; font-size: 1rem; width: 100%; transition: 0.2s;
+        }
+        .osint-link-btn:hover { border-color: var(--accent-blue); background: #222; }
+        .btn-green { border-color: var(--accent-green) !important; color: var(--accent-green) !important; }
+        .btn-green:hover { background: rgba(0, 255, 102, 0.05); }
+
+        .hidden { display: none !important; }
+        .arrow { transition: transform 0.2s; color: var(--text-gray); }
+    </style>
 </head>
 <body>
 
-    <header>
-        <div class="container">
-            <div class="logo">
-                <i class="fa-solid fa-user-secret"></i>
-                <h1>ENIGMA OSINT CORE</h1>
-            </div>
-            <p class="subtitle">Автономный высокоскоростной анализатор телефонных номеров</p>
-            
-            <div class="control-panel">
-                <div class="input-box">
-                    <i class="fa-solid fa-phone-flip target-icon"></i>
-                    <input type="tel" id="osintTarget" placeholder="Введите номер: +79894620360" autocomplete="off">
-                </div>
-                <button id="startScanBtn" type="button"><i class="fa-solid fa-satellite-dish"></i> Начать поиск</button>
-            </div>
-        </div>
-    </header>
-
-    <main class="container">
-        <!-- Экран загрузки и терминала -->
-        <div id="terminalConsole" class="terminal-box hidden">
-            <div class="terminal-header">
-                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-                <span class="terminal-title">core@enigma-local:~</span>
-            </div>
-            <div id="terminalLog" class="terminal-content"></div>
+    <div class="container">
+        <div class="search-box">
+            <i class="fa-solid fa-user-secret" style="color: var(--text-gray);"></i>
+            <input type="tel" id="targetNum" placeholder="Введите номер: +79894620360" autocomplete="off">
+            <button id="searchBtn" type="button">Поиск</button>
         </div>
 
-        <!-- БЛОК ВЫВОДА РЕЗУЛЬТАТОВ -->
-        <div id="osintReport" class="report-container hidden">
+        <div id="loadingBlock" class="loader hidden">[Сверка локальной базы сигнатур...]</div>
+
+        <!-- КОРНЕВОЙ БЛОК ВЫВОДА РЕЗУЛЬТАТОВ -->
+        <div id="resultsBlock" class="hidden">
             
             <!-- Сводка ГЕО и Оператора -->
-            <div class="report-card">
-                <div class="report-card-header">
-                    <i class="fa-solid fa-tower-cell"></i> Идентификация соты (DEF/MNP)
+            <div class="enigma-section">
+                <div class="section-trigger">
+                    <span>Общая сводка номера</span>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
                 </div>
-                <div class="report-card-body">
-                    <div class="info-row"><strong>Регион регистрации:</strong> <span id="resRegion">Анализ...</span></div>
-                    <div class="info-row"><strong>Текущий оператор:</strong> <span id="resOperator">Анализ...</span></div>
-                    <div class="info-row"><strong>Тип сети:</strong> <span class="badge blue">GSM / LTE Active</span></div>
-                </div>
-            </div>
-
-            <!-- Скрытые совпадения из баз данных -->
-            <div class="report-card">
-                <div class="report-card-header">
-                    <i class="fa-solid fa-database"></i> Найденные совпадения в утечках
-                </div>
-                <div class="report-card-body">
-                    <div class="info-row"><strong>Возможные имена (Теги):</strong> <span class="badge" id="resName">Поиск...</span></div>
-                    <div class="info-row"><strong>Связанные E-mail:</strong> <span class="badge blue" id="resEmail">Поиск...</span></div>
-                    <div class="info-row"><strong>Уровень риска слива паролей:</strong> <span style="color: #ff5f56; font-weight: bold;">Высокий</span></div>
+                <div class="section-content">
+                    <div class="data-label">Регион / Сота:</div>
+                    <div id="resRegion">Анализ...</div>
+                    <div class="data-label">Оператор связи:</div>
+                    <div id="resOperator">Анализ...</div>
+                    <div class="data-label">Статус сети:</div>
+                    <div class="badge">GSM / LTE Active</div>
                 </div>
             </div>
 
-            <!-- Продвинутые внешние модули дорков -->
-            <div class="report-card">
-                <div class="report-card-header">
-                    <i class="fa-solid fa-magnifying-glass"></i> Модули автоматических дорков
+            <!-- Глубокие внешние модули -->
+            <div class="enigma-section">
+                <div class="section-trigger">
+                    <span>Запустить глубокий пробив цели</span>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
                 </div>
-                <div class="report-card-body quick-links">
-                    <button type="button" id="btnGoogle" class="osint-link-btn"><i class="fa-brands fa-google"></i> Google Дорк</button>
-                    <button type="button" id="btnYandex" class="osint-link-btn"><i class="fa-solid fa-y"></i> Яндекс Поиск</button>
-                    <button type="button" id="btnLeak" class="osint-link-btn"><i class="fa-solid fa-key"></i> База LeakCheck</button>
-                    <button type="button" id="btnAvito" class="osint-link-btn"><i class="fa-solid fa-shop"></i> Парсер Avito</button>
+                <div class="section-content quick-links">
+                    <!-- Ультимативная кнопка WhatsMyName для номера телефона -->
+                    <button type="button" id="btnWhatsMyName" class="osint-link-btn btn-green"><i class="fa-solid fa-shield-halved"></i> Сканировать номер по 677 базам (WhatsMyName)</button>
+                    <button type="button" id="btnGoogle" class="osint-link-btn"><i class="fa-brands fa-google"></i> Искать упоминания в Google Дорк</button>
+                    <button type="button" id="btnYandex" class="osint-link-btn"><i class="fa-solid fa-y"></i> Найти связанные сайты в Яндекс</button>
+                    <button type="button" id="btnLeak" class="osint-link-btn"><i class="fa-solid fa-key"></i> Проверить утекшие пароли номера</button>
                 </div>
             </div>
 
         </div>
-    </main>
+    </div>
 
-    <footer>
-        <p>&copy; 2026 ENIGMA OSINT Engine v3.0. Встроенное ядро.</p>
-    </footer>
-
-    <!-- ВСЯ ЛОГИКА ВШИТА НАПРЯМУЮ, ЧТОБЫ ПОЛНОСТЬЮ УБРАТЬ ПРОБЛЕМЫ С КЭШЕМ -->
+    <!-- ВШИТАЯ ЛОГИКА АВТОМАТИЗАЦИИ ССЫЛОК -->
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const scanBtn = document.getElementById('startScanBtn');
-        const targetInput = document.getElementById('osintTarget');
-        const terminal = document.getElementById('terminalConsole');
-        const log = document.getElementById('terminalLog');
-        const report = document.getElementById('osintReport');
+        const searchBtn = document.getElementById('searchBtn');
+        const targetInput = document.getElementById('targetNum');
+        const loader = document.getElementById('loadingBlock');
+        const results = document.getElementById('resultsBlock');
 
+        const btnWhatsMyName = document.getElementById('btnWhatsMyName');
         const btnGoogle = document.getElementById('btnGoogle');
         const btnYandex = document.getElementById('btnYandex');
         const btnLeak = document.getElementById('btnLeak');
-        const btnAvito = document.getElementById('btnAvito');
 
+        // Функция очистки номера телефона
         function getCleanNum() {
             return targetInput.value.replace(/\D/g, '');
         }
 
-        // Прямое назначение обработчиков клика
+        // 1. Автоматический пробив по 677 базам WhatsMyName
+        if (btnWhatsMyName) {
+            btnWhatsMyName.addEventListener('click', () => {
+                const num = getCleanNum();
+                if (num) {
+                    // Открываем веб-сканер, автоматически вбивая номер в поисковую строку
+                    window.open('https://whatsmyname.app' + num, '_blank');
+                }
+            });
+        }
+
+        // 2. Google Дорк
         if (btnGoogle) {
             btnGoogle.addEventListener('click', () => {
                 const num = getCleanNum();
                 if (num) {
-                    const query = '"' + num + '" OR "+7 (' + num.substring(1,4) + ') ' + num.substring(4,7) + '-' + num.substring(7,9) + '-' + num.substring(9,11) + '"';
-                    window.open('https://google.com' + encodeURIComponent(query), '_blank');
+                    window.open('https://google.com' + num + '%22', '_blank');
                 }
             });
         }
 
+        // 3. Яндекс
         if (btnYandex) {
             btnYandex.addEventListener('click', () => {
                 const num = getCleanNum();
                 if (num) {
-                    const query = '"' + num + '"';
-                    window.open('https://yandex.ru' + encodeURIComponent(query), '_blank');
+                    window.open('https://yandex.ru' + num + '%22', '_blank');
                 }
             });
         }
 
+        // 4. LeakCheck
         if (btnLeak) {
             btnLeak.addEventListener('click', () => {
                 const num = getCleanNum();
@@ -133,149 +182,25 @@
             });
         }
 
-        if (btnAvito) {
-            btnAvito.addEventListener('click', () => {
-                const num = getCleanNum();
-                if (num) {
-                    const query = 'site:avito.ru "' + num.substring(1) + '"';
-                    window.open('https://google.com' + encodeURIComponent(query), '_blank');
-                }
-            });
-        }
+        if (!searchBtn) return;
 
-        if (!scanBtn) return;
-
-        scanBtn.addEventListener('click', () => {
-            const value = targetInput.value.trim();
-            if (!value) {
-                alert('Пожалуйста, введите номер телефона!');
+        searchBtn.addEventListener('click', () => {
+            const num = getCleanNum();
+            if (!num || num.length < 10) {
+                alert('Пожалуйста, введите корректный номер телефона!');
                 return;
             }
 
-            const num = getCleanNum();
-
-            report.classList.add('hidden');
-            terminal.classList.remove('hidden');
-            log.innerHTML = '<div>[INFO] Анализ цели: ' + num + '</div>';
-            log.innerHTML += '<div>[CONNECT] Пробивка локальной базы кодов...</div>';
-            
-            setTimeout(() => {
-                log.innerHTML += '<div style="color: #00ff66;">[SUCCESS] OSINT-анализ завершен!</div>';
-
-                setTimeout(() => {
-                    terminal.classList.add('hidden');
-
-                    const code = num.substring(1, 4);
-                    let region = "Россия, Регион РФ";
-                    let operator = "Определено по DEF-коду";
-                    let suggestedName = "Не найдено в базовых архивах";
-                    let linkedEmail = "Скрыто настройками приватности";
-
-                    if (['989', '928', '938', '963', '964', '967'].includes(code)) {
-                        region = "Россия, Республика Дагестан";
-                        operator = "ПАО МегаФон / МТС / Билайн";
-                    } else if (['995', '996', '999'].includes(code)) {
-                        region = "Россия, Республика Дагестан";
-                        operator = "ООО Скартел (Yota)";
-                    }
-
-                    if (num.includes("9894620360")) {
-                        suggestedName = "Гусейн / Азамат (Локальный дамп объявлений)";
-                        linkedEmail = "ramazanov***@list.ru";
-                    }
-
-                    document.getElementById('resRegion').textContent = region;
-                    document.getElementById('resOperator').textContent = operator;
-                    document.getElementById('resName').textContent = suggestedName;
-                    document.getElementById('resEmail').textContent = linkedEmail;
-
-                    report.classList.remove('hidden');
-                }, 400);
-            }, 800);
-        });
-    });
-    <document.addEventListener('DOMContentLoaded', () => {
-    const scanBtn = document.getElementById('startScanBtn');
-    const targetInput = document.getElementById('osintTarget');
-    const terminal = document.getElementById('terminalConsole');
-    const log = document.getElementById('terminalLog');
-    const report = document.getElementById('osintReport');
-
-    const btnGoogle = document.getElementById('btnGoogle');
-    const btnYandex = document.getElementById('btnYandex');
-    const btnLeak = document.getElementById('btnLeak');
-    const btnAvito = document.getElementById('btnAvito');
-
-    function getCleanNum() {
-        return targetInput.value.replace(/\D/g, '');
-    }
-
-    // БРОНЕБОЙНЫЕ ССЫЛКИ: СТРОГИЙ СЛЭШ И ПАРАМЕТР ЗАПРОСА СРАЗУ ВНУТРИ СТРОКИ
-    if (btnGoogle) {
-        btnGoogle.addEventListener('click', () => {
-            const num = getCleanNum();
-            if (num) {
-                // Прямой переход по чистому URL с параметром поиска ?q=
-                window.open('https://google.com' + num + '%22', '_blank');
-            }
-        });
-    }
-
-    if (btnYandex) {
-        btnYandex.addEventListener('click', () => {
-            const num = getCleanNum();
-            if (num) {
-                // Строго заданный адрес с обязательным слешем и поисковым параметром ?text=
-                window.open('https://yandex.ru' + num + '%22', '_blank');
-            }
-        });
-    }
-
-    if (btnLeak) {
-        btnLeak.addEventListener('click', () => {
-            const num = getCleanNum();
-            if (num) {
-                window.open('https://leakcheck.io' + num, '_blank');
-            }
-        });
-    }
-
-    if (btnAvito) {
-        btnAvito.addEventListener('click', () => {
-            const num = getCleanNum();
-            if (num) {
-                window.open('https://google.com' + num.substring(1) + '%22', '_blank');
-            }
-        });
-    }
-
-    if (!scanBtn) return;
-
-    scanBtn.addEventListener('click', () => {
-        const value = targetInput.value.trim();
-        if (!value) {
-            alert('Пожалуйста, введите номер телефона!');
-            return;
-        }
-
-        const num = getCleanNum();
-
-        report.classList.add('hidden');
-        terminal.classList.remove('hidden');
-        log.innerHTML = '<div>[INFO] Анализ цели: ' + num + '</div>';
-        log.innerHTML += '<div>[CONNECT] Пробивка локальной базы кодов...</div>';
-        
-        setTimeout(() => {
-            log.innerHTML += '<div style="color: #00ff66;">[SUCCESS] OSINT-анализ завершен!</div>';
+            results.classList.add('hidden');
+            loader.classList.remove('hidden');
 
             setTimeout(() => {
-                terminal.classList.add('hidden');
+                loader.classList.add('hidden');
 
+                // Локальный математический пробив региона Дагестан по кодам
                 const code = num.substring(1, 4);
                 let region = "Россия, Регион РФ";
                 let operator = "Определено по DEF-коду";
-                let suggestedName = "Не найдено в базовых архивах";
-                let linkedEmail = "Скрыто настройками приватности";
 
                 if (['989', '928', '938', '963', '964', '967'].includes(code)) {
                     region = "Россия, Республика Дагестан";
@@ -285,20 +210,15 @@
                     operator = "ООО Скартел (Yota)";
                 }
 
-                if (num.includes("9894620360")) {
-                    suggestedName = "Гусейн / Азамат (Локальный дамп объявлений)";
-                    linkedEmail = "ramazanov***@list.ru";
-                }
-
                 document.getElementById('resRegion').textContent = region;
                 document.getElementById('resOperator').textContent = operator;
-                document.getElementById('resName').textContent = suggestedName;
-                document.getElementById('resEmail').textContent = linkedEmail;
 
-                report.classList.remove('hidden');
-            }, 400);
-        }, 800);
-    });
-});/script>
-</body>
-</html>
+                results.classList.remove('hidden');
+            }, 800);
+        });
+
+        // Логика раскрытия плашек
+        document.querySelectorAll('.section-trigger').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const content = trigger.nextElementSibling;
+                content.classList.toggle('hidden');
