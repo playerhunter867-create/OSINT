@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OSINT HUB // Dashboard</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar"><div class="container nav">
+<a class="brand" href="index.html"><span class="prompt">[+]</span> OSINT_HUB</a>
+<nav class="navlinks">
+<a class="active" href="dashboard.html">DASHBOARD</a><a href="index.html">CATALOG</a><a href="sherlock.html">SHERLOCK</a>
+</nav></div></header>
+
+<main class="container">
+<section class="hero compact-hero">
+<div class="eyebrow">workspace / investigation session</div>
+<h1>OSINT<span class="prompt">_DASHBOARD</span></h1>
+<p class="lead">One target field, multiple public-data workflows, and a temporary local investigation session. Results stay in this browser unless a module explicitly opens a third-party service.</p>
+</section>
+
+<section class="dashboard-grid">
+<section class="terminal target-terminal">
+<div class="termhead"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>session://target</span><span class="term-spacer"></span><span id="sessionId">SESSION —</span></div>
+<div class="target-controls">
+<div class="type-tabs" id="typeTabs">
+<button class="type-tab active" data-type="USERNAME">USERNAME</button>
+<button class="type-tab" data-type="EMAIL">EMAIL</button>
+<button class="type-tab" data-type="DOMAIN">DOMAIN</button>
+<button class="type-tab" data-type="IP">IP</button>
+<button class="type-tab" data-type="PHONE">PHONE</button>
+</div>
+<div class="searchbox">
+<input id="target" maxlength="128" placeholder="Enter a username…" autocomplete="off" spellcheck="false">
+<button id="run">RUN MODULES</button>
+<button id="clear" class="secondary">CLEAR</button>
+</div>
+<div class="module-hint" id="moduleHint">USERNAME → Sherlock public-profile enumeration.</div>
+</div>
+</section>
+
+<section class="panel module-panel">
+<div class="paneltitle">ACTIVE MODULES</div>
+<div id="modules" class="module-list"></div>
+</section>
+</section>
+
+<section class="stats dashboard-stats">
+<div class="stat"><b id="checked">0</b><span>CHECKED</span></div>
+<div class="stat"><b id="found">0</b><span>FOUND</span></div>
+<div class="stat"><b id="opened">0</b><span>OPENED</span></div>
+<div class="stat"><b id="sessionCount">0</b><span>SESSION ITEMS</span></div>
+</section>
+
+<section class="workspace">
+<section class="terminal">
+<div class="termhead"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>session://results</span></div>
+<div id="progress" class="progress"><i></i></div>
+<div id="status" class="results"><div class="notice">Awaiting a target.</div></div>
+<div id="results" class="results"></div>
+</section>
+
+<aside class="panel session-panel">
+<div class="paneltitle">TEMPORARY SESSION</div>
+<div class="session-tools">
+<button id="export" class="secondary">EXPORT JSON</button>
+<button id="wipe" class="secondary">WIPE SESSION</button>
+</div>
+<div id="sessionItems" class="session-items"><div class="notice">No saved items.</div></div>
+</aside>
+</section>
+
+<p class="notice">Scope: public, lawful research only. This dashboard does not bypass authentication, access private accounts, or expose non-public data. Third-party services have their own terms and privacy policies.</p>
+</main>
+<footer><div class="container">OSINT_HUB // dashboard // local temporary session</div></footer>
+<script src="dashboard.js"></script>
+</body></html>
