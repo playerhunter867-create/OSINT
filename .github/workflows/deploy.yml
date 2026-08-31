@@ -1,0 +1,100 @@
+name: Deploy OSINT-HUB Dashboard
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find Dashboard ZIP
+        id: find_zip
+        shell: bash
+        run: |
+          set -e
+
+          ZIP=$(find . -maxdepth 1 -type f -name '*.zip' | head -n 1)
+
+          if [ -z "$ZIP" ]; then
+            echo "ERROR: No ZIP file found in repository root."
+            exit 1
+          fi
+
+          echo "Using ZIP: $ZIP"
+          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare Pages directory
+        shell: bash
+        run: |
+          set -e
+
+          rm -rf _site
+          mkdir -p _site
+
+          echo "Extracting Dashboard..."
+
+          unzip -q "${{ steps.find_zip.outputs.zip }}" -d _extracted
+
+          # If the ZIP contains a single top-level directory,
+          # publish its contents instead of the directory itself.
+          TOP_LEVEL_COUNT=$(find _extracted -mindepth 1 -maxdepth 1 | wc -l)
+
+          if [ "$TOP_LEVEL_COUNT" -eq 1 ] && [ -d "$(find _extracted -mindepth 1 -maxdepth 1 -type d)" ]; then
+            ROOT_DIR=$(find _extracted -mindepth 1 -maxdepth 1 -type d)
+            cp -a "$ROOT_DIR"/. _site/
+          else
+            cp -a _extracted/. _site/
+          fi
+
+          echo "Published files:"
+          find _site -maxdepth 2 -type f | sort
+
+      - name: Verify Dashboard
+        shell: bash
+        run: |
+          set -e
+
+          if [ ! -f "_site/index.html" ]; then
+            echo "ERROR: index.html was not found after extraction."
+            echo "The ZIP must contain index.html in its root or in one top-level project folder."
+            exit 1
+          fi
+
+          echo "Dashboard verified successfully."
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
