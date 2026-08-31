@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OSINT_HUB</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="hub">
+  <header class="hero">
+    <div class="logo">OSINT<span>_</span>HUB</div>
+    <p>Центр запуска разрешённых публичных инструментов</p>
+  </header>
+
+  <section class="panel">
+    <label for="target">ЗАПРОС</label>
+    <input id="target" autocomplete="off" placeholder="Username, домен или IP">
+    <div class="types">
+      <button class="type active" data-type="username">USERNAME</button>
+      <button class="type" data-type="domain">DOMAIN</button>
+      <button class="type" data-type="ip">IP</button>
+    </div>
+    <p id="hint" class="hint">Введите публичный username и выберите сервис.</p>
+  </section>
+
+  <section class="panel">
+    <h2 id="tools-title">ИНСТРУМЕНТЫ</h2>
+    <div id="tools" class="tools"></div>
+  </section>
+
+  <section class="notice">
+    <strong>Как это работает:</strong> OSINT_HUB не заявляет, что данные найдены.
+    Кнопки только открывают выбранные публичные сервисы в новой вкладке и передают
+    запрос через URL там, где это поддерживается. Используйте только законно и
+    уважайте правила каждого сервиса.
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
